@@ -66,7 +66,6 @@ function hudSetup.init(player)
             print("hudSetup - Line 57: Created vertical grid line at position " .. step*i)
         end
 
-        grid.surface = widgetsAreUs.createBox(0, 0, res.x, res.y, {0, 0, 0}, 0)
         print("hudSetup - Line 60: Surface grid created")
 
         players[player].hudSetup.xThresholds = xThresholds
