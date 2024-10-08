@@ -151,10 +151,16 @@ function widgetsAreUs.createBox(x, y, width, height, color, alpha)
     print("widgetsAreUs - Line 135: Creating box.")
     local box = component.glasses.addRect()
     box.setSize(height, width)
+    local old_setSize = box.setSize
     box.setPosition(x, y)
     box.setColor(table.unpack(color))
     if alpha then box.setAlpha(alpha) end
     box.x = x box.x2 = x+width box.y = y box.y2 = y+height
+    box.setSize = function(height, width)
+        print("widgetsAreUs - Line 142: Setting box size.")
+        old_setSize(height, width)
+        box.x2 = box.x + width box.y2 = box.y + height
+    end
     function box.contains(px, py)
         print("widgetsAreUs - Line 143: Checking if point is inside box.")
         return px >= x and px <= box.x2 and py >= y and py <= box.y2
