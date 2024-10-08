@@ -1,6 +1,6 @@
 local widgetsAreUs = require("lib.widgetsAreUs")
 local contextMenu = require("displays.glasses_elements.contextMenu")
-local modules = require("modules.displays.modules.lua")
+local modules = require("displays.modules.modules")
 
 local hudSetup = {}
 
