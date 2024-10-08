@@ -239,6 +239,13 @@ function widgetsAreUs.symbolBox(x, y, symbolText, colorOrGreen, func, args)
     return widgetsAreUs.attachCoreFunctions({box = box, symbol = symbol, onClick = box.onClick})
 end
 
+function widgetsAreUs.titleBox(x, y, width, height, color, alpha, text1)
+    print("widgetsAreUs - Line 127: Creating a title box.")
+    local box = widgetsAreUs.createBox(x, y, width, height, color, alpha)
+    local text = widgetsAreUs.text(x + 20, y + 2, text1, 0.9)
+    return widgetsAreUs.attachCoreFunctions{box = box, text = text}
+end
+
 -------------------------------------------
 --- Specific
 
