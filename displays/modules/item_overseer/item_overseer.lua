@@ -231,8 +231,11 @@ item_overseer.onClick = function(eventName, address, player, x, y, button)
             print("item_overseer: Left-click detected for player " .. tostring(player))
             component.glasses = require("displays.glasses_display").getGlassesProxy(player)
             if item_overseer.players[player].elements.background.contains(x, y) then
+                print("item_overseer: Click detected within background for player " .. tostring(player))
                 for key, element in pairs(item_overseer.players[player].elements) do
-                    if element.box.contains(x, y) then
+                    if key == "background" then
+                        print("skipping background")
+                    elseif element.box.contains(x, y) then
                         element.onClick(x, y)
                         return
                     end
