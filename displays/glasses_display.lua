@@ -235,7 +235,7 @@ glasses_display.onClick = function(eventName, address, player, x, y, button)
                 short.grid_button.onClick()
             elseif players[player].hudSetup.elements then
                 print("glasses_display - Line 207: HUD setup onClick triggered for player: " .. player)
-                players[player].hudSetup.onClick(eventName, address, player, x, y, button)
+                hudSetup.onClick(eventName, address, player, x, y, button)
             else
                 for moduleName, module in pairs(players[player].modules[players[player].current_hudPage]) do
                     if module and module.elements and module.elements.backgroundBox and module.elements.backgroundBox.contains(x, y) then
