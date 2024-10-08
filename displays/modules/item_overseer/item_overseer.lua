@@ -12,6 +12,9 @@ local itemBox_main
 local itemBox_tracked
 local levelMaintainer
 
+local function prev(player) item_overseer.players[player].display:prevPage() end
+local function next(player) item_overseer.players[player].display:nextPage() end
+
 local function init_display_storage(player)
     local suc, err = pcall(function()
         print("item_overseer: Initializing display storage for player " .. tostring(player))
@@ -117,10 +120,8 @@ function item_overseer.init(player)
         item_overseer.players[player].elements.search_bar = search_bar
 
         print("item_overseer: Creating navigation buttons for player " .. tostring(player))
-        local function prev() item_overseer.players[player].display:prevPage() end
-        local function next() item_overseer.players[player].display:nextPage() end
-        local up_button = widgetsAreUs.symbolBox(window.x + ((window.width/2)-10), window.y+22, "▲", c.navbutton, prev)
-        local down_button = widgetsAreUs.symbolBox(window.x + ((window.width/2)-10), window.y+window.height-22, "▼", c.navbutton, next)
+        local up_button = widgetsAreUs.symbolBox(window.x + ((window.width/2)-10), window.y+22, "▲", c.navbutton, prev, player)
+        local down_button = widgetsAreUs.symbolBox(window.x + ((window.width/2)-10), window.y+window.height-22, "▼", c.navbutton, next, player)
         item_overseer.players[player].elements.up_button = up_button
         item_overseer.players[player].elements.down_button = down_button
 
