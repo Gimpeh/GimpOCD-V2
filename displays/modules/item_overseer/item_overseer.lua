@@ -39,7 +39,7 @@ function item_overseer.init_display_storage(player)
 end
 
 function item_overseer.init_tracked(player)
-    --local suc, err = pcall(function()
+    local suc, err = pcall(function()
         print("item_overseer: Initializing tracked items for player " .. tostring(player))
         print("item_overseer: Getting glasses proxy for player " .. tostring(player))
         component.glasses = require("displays.glasses_display").getGlassesProxy(player)
@@ -56,12 +56,12 @@ function item_overseer.init_tracked(player)
         item_overseer.players[player].display = PagedWindow.new(item_overseer.players[player].monitored_items, 80, 35, {x1=window.x, y1=window.y+44,x2=window.x+window.width, y2=window.y+window.height-22}, 3, itemBox_tracked, {player})
         print("item_overseer: Displaying tracked items for player " .. tostring(player))
         item_overseer.players[player].display:displayItems()
-    --end)
-    --if not suc then print(err) end
+    end)
+    if not suc then print(err) end
 end
 
 function item_overseer.init_crafting(player)
-    --local suc, err = pcall(function()
+    local suc, err = pcall(function()
         print("item_overseer: Initializing crafting items for player " .. tostring(player))
         print("item_overseer: Getting glasses proxy for player " .. tostring(player))
         component.glasses = require("displays.glasses_display").getGlassesProxy(player)
@@ -78,8 +78,8 @@ function item_overseer.init_crafting(player)
         item_overseer.players[player].display = PagedWindow.new(item_overseer.players[player].crafting_items, 150, 30, {x1=window.x, y1=window.y+44,x2=window.x+window.width, y2=window.y+window.height-22}, 3, levelMaintainer, {player})
         print("item_overseer: Displaying crafting items for player " .. tostring(player))
         item_overseer.players[player].display:displayItems()
-    --end)
-    --if not suc then print(err) end
+    end)
+    if not suc then print(err) end
 end
 
 function item_overseer.init(player)
