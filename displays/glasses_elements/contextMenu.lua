@@ -64,7 +64,7 @@ function contextMenu.onClick(eventName, address, player, x, y, button)
             if players[player].contextMenu.elements.backgroundBox.contains(x, y) then
                 local choice = math.floor((y - players[player].contextMenu.elements.backgroundBox.y) / choiceHeight) + 1
                 print("contextMenu - Line 57: Choice selected - " .. choice)
-                local func = players[player].contextMenu.funcTable[choice]
+                local func = players[player].contextMenu.funcTable[choice].func
                 if players[player].contextMenu.funcTable[choice].args and players[player].contextMenu.funcTable[choice].args[1] then
                     print("contextMenu - Line 60: Calling function with arguments")
                     func(table.unpack(players[player].contextMenu.funcTable[choice].args))
