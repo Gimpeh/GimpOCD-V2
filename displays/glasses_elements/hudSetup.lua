@@ -169,7 +169,7 @@ function hudSetup.onDrag(eventName, address, player, x, y, button)
                 print("hudSetup - Line 131: Created new selection window for player")
             elseif players[player].hudSetup.elements.window.x + players[player].hudSetup.elements.window.width < gridSelectionRight or
                 players[player].hudSetup.elements.window.y + players[player].hudSetup.elements.window.height < gridSelectionBottom then
-                players[player].hudSetup.elements.window.setSize(gridSelectionRight-gridSelectionLeft, gridSelectionBottom-gridSelectionTop)
+                players[player].hudSetup.elements.window.setSize(gridSelectionBottom-gridSelectionTop, gridSelectionRight-gridSelectionLeft)
                 print("hudSetup - Line 135: Resized selection window for player")
             end
 
