@@ -88,8 +88,8 @@ function item_overseer.init(player)
         local window = {}
         window.x = windowPre.x
         window.y = windowPre.y
-        window.width = windowPre.width
-        window.height = windowPre.height
+        window.width = windowPre.x2
+        window.height = windowPre.y2
         print("item_overseer: Initializing player table for " .. tostring(player))
         item_overseer.players[player] = {}
         item_overseer.players[player].window = window
