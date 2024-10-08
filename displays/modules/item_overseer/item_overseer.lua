@@ -144,7 +144,7 @@ end
 --- Updated Element Creation Functions
 
 itemBox_main = function(x, y, itemstack, player)
-    local suc, err = pcall(function()
+    --local suc, err = pcall(function()
         print("item_overseer: Creating main item box for player " .. tostring(player) .. ", itemstack: " .. tostring(itemstack.label))
         component.glasses = require("displays.glasses_display").getGlassesProxy(player)
         local function mainStorage_itemBox_context()
@@ -160,8 +160,8 @@ itemBox_main = function(x, y, itemstack, player)
         print("item_overseer: Attaching context menu to main item box for player " .. tostring(player))
         local new_itemBox = widgetsAreUs.attachOnClickRight(itemBox, mainStorage_itemBox_context)
         return new_itemBox
-    end)
-    if not suc then print(err) end
+    --end)
+    --if not suc then print(err) end
 end
 
 itemBox_tracked = function(x, y, itemstack, player)
