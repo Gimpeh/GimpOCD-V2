@@ -125,9 +125,9 @@ function hudSetup.onDrag(eventName, address, player, x, y, button)
             end
             --Init Grid Coordinates in a usable context
             print("hudSetup - Line 101: Initializing grid selection coordinates")
-            local gridSelectionLeft = nil
+            local gridSelectionLeft = 0
             local gridSelectionRight = nil
-            local gridSelectionTop = nil
+            local gridSelectionTop = 0
             local gridSelectionBottom = nil
             --convert the x coordinates to grid coordinates
             for _, gridCoords in ipairs(players[player].hudSetup.xThresholds) do
