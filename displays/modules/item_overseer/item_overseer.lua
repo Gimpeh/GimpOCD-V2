@@ -179,6 +179,7 @@ itemBox_tracked = function(x, y, itemstack, player)
                     end
                     print("item_overseer: Clearing displayed items and updating tracked items display for player " .. tostring(player))
                     item_overseer.players[player].display:clearDisplayedItems()
+                    item_overseer.players[player].display = nil
                     item_overseer.players[player].display = PagedWindow.new(item_overseer.players[player].monitored_items, 80, 35, {x1=item_overseer.players[player].window.x, y1=item_overseer.players[player].window.y+44,x2=item_overseer.players[player].window.x+item_overseer.players[player].window.width, y2=item_overseer.players[player].window.y+item_overseer.players[player].window.height-22}, 3, itemBox_tracked, {player})
                     item_overseer.players[player].display:displayItems()
                 end, args = {}},
@@ -207,6 +208,7 @@ levelMaintainer = function(x, y, argsTable, player)
                     item_overseer.players[player].crafting_items[argsTable.itemStack.label] = nil
                     print("item_overseer: Clearing displayed items and updating crafting items display for player " .. tostring(player))
                     item_overseer.players[player].display:clearDisplayedItems()
+                    item_overseer.players[player].display = nil
                     item_overseer.players[player].display = PagedWindow.new(item_overseer.players[player].crafting_items, 150, 30, {x1=item_overseer.players[player].window.x, y1=item_overseer.players[player].window.y+44,x2=item_overseer.players[player].window.x+item_overseer.players[player].window.width, y2=item_overseer.players[player].window.y+item_overseer.players[player].window.height-22}, 3, levelMaintainer, {player})
                     item_overseer.players[player].display:displayItems()
                 end, args = {}}

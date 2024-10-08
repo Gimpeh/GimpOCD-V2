@@ -49,8 +49,11 @@ end
 function PagedWindow:clearDisplayedItems()
     print("PagedWindow - Line 34: Clearing displayed items.")
     local success, err = pcall(function()
+        print("PagedWindow - Line 36: Starting clearDisplayedItems.")
         for _, element in ipairs(self.currentlyDisplayed) do
+            print("PagedWindow - Line 39: Trying Removing element.")
             if element.remove then
+                print("element has remove method")
                 element.remove()  -- Call the remove method of each element if it exists
             else
                 print("element has no remove method")
