@@ -6,7 +6,7 @@ contextMenu.remove = nil
 
 local choiceHeight = 10
 
-function contextMenu.init(x, y, player, funcTable)
+function contextMenu.init(x2, y2, player, funcTable)
     print("contextMenu - Line 10: Initializing context menu")
     --[[
     funcTable = {
@@ -14,6 +14,8 @@ function contextMenu.init(x, y, player, funcTable)
         [2] = {text = "text", func = function, args = {args}},
             and so on
     ]]
+    local x = math.floor(x2)
+    local y = math.floor(y2)
 
     local suc, err = pcall(function()
         print("contextMenu - Line 16: Getting glasses proxy for player")
