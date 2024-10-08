@@ -58,7 +58,10 @@ local function registerUsers(eventName, address, player, max_x, max_y)
             players[player].currentModules = {}
         end
         if not players[player].availableModules then
-            players[player].availableModules = loadfile("displays.modules.modules")()
+            players[player].availableModules = {}
+            for k, v in pairs(modules) do
+                players[player].availableModules[k] = v
+            end
         end
         if not players[player].glasses_display.elements then
             players[player].glasses_display.elements = {}
