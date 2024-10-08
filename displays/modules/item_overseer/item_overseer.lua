@@ -1,4 +1,4 @@
-local c = require("gimp_colors")
+local c = require("lib.gimp_colors")
 local widgetsAreUs = require("lib.widgetsAreUs")
 local contextMenu = require("displays.glasses_elements.contextMenu")
 local PagedWindow = require("lib.PagedWindow")
