@@ -3,6 +3,8 @@ local event = require("event")
 
 local widgetsAreUs = {}
 
+local print = function() end
+
 -------------------------------------------
 --- Force Conformity
 
