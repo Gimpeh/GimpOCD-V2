@@ -221,7 +221,7 @@ end
 function hudSetup.remove(player)
     print("hudSetup - Line 176: remove function called for player")
     local suc, err = pcall(function()
-        for index, element in pairs(players[player].hudSetup.elements) do
+        for index, element in ipairs(players[player].hudSetup.elements) do
             element.remove()
             players[player].hudSetup.elements[index] = nil
             print("hudSetup - Line 179: Removed element " .. index .. " for player")
