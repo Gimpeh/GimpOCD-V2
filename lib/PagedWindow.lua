@@ -93,8 +93,11 @@ function PagedWindow:displayItems()
             -- Ensure self.args is initialized correctly
             if self.args then
                 print("PagedWindow - Line 77: Args exists, checking index: " .. tostring(i))
-                if not self.args[i] then
+                if not self.args[i] and self.args[1] then
                     print("PagedWindow - Line 79: Arg index " .. tostring(i) .. " is nil, initializing.")
+                    self.args[i] = self.args[1]
+                elseif not self.args[i] then
+                    print("PagedWindow - Line 82: Arg index " .. tostring(i) .. " is nil, creating and initializing.")
                     self.args[i] = i
                 end
             else
