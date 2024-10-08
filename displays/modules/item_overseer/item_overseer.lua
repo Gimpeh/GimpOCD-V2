@@ -96,6 +96,7 @@ function item_overseer.init(player)
 
         local cur_page = players[player].current_hudPage
         players[player].modules[cur_page].item_overseer = {}
+        players[player].modules[cur_page].item_overseer.elements = {}
 
         print("item_overseer: Initializing elements table for player " .. tostring(player))
         item_overseer.players[player].elements = {}
@@ -107,6 +108,7 @@ function item_overseer.init(player)
         print("item_overseer: Creating background element for player " .. tostring(player))
         local background = widgetsAreUs.createBox(window.x, window.y, window.width, window.height, c.background, 0.5)
         item_overseer.players[player].elements.background = background
+        players[player].modules[cur_page].item_overseer.elements.backgroundBox = background
 
         print("item_overseer: Creating search bar element for player " .. tostring(player))
         local search_bar = widgetsAreUs.searchBar(window.x, window.y, window.width)
@@ -127,6 +129,8 @@ function item_overseer.init(player)
         item_overseer.players[player].elements.button_main = display_main
         item_overseer.players[player].elements.button_tracked = display_monitored
         item_overseer.players[player].elements.button_crafting = display_crafting
+
+        
     end)
     if not suc then print(err) end
 end
