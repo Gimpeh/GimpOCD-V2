@@ -256,7 +256,9 @@ item_overseer.onClickRight = function(eventName, address, player, x, y, button)
             component.glasses = require("displays.glasses_display").getGlassesProxy(player)
             if item_overseer.players[player].elements.background.contains(x, y) then
                 for key, element in pairs(item_overseer.players[player].elements) do
-                    if element.box.contains(x, y) then
+                    if key == "background" then
+                        print("skipping background")
+                    elseif element.background.contains(x, y) then
                         element.onClickRight()
                         return true
                     end
