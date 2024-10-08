@@ -52,6 +52,8 @@ function PagedWindow:clearDisplayedItems()
         for _, element in ipairs(self.currentlyDisplayed) do
             if element.remove then
                 element.remove()  -- Call the remove method of each element if it exists
+            else
+                print("element has no remove method")
             end
         end
         self.currentlyDisplayed = {}
