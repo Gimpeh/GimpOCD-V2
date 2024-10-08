@@ -74,7 +74,7 @@ local function registerUsers(eventName, address, player, max_x, max_y)
     if not suc then print(err) end
 end
 
-function glasses_display.getGlassProxy(player)
+function glasses_display.getGlassesProxy(player)
     print("glasses_display - Line 72: getGlassProxy called for player: " .. player)
     local suc, result = pcall(function()
         print("glasses_display - Line 74: Searching for glasses components")
@@ -124,7 +124,7 @@ init_phase2 = function(player)
         --**To-DO** Remove All displayed elements and reload state from save file (probably should save the relevant states first)
 
         print("glasses_display - Line 111: Getting GlassProxy for player: " .. player)
-        component.glasses = glasses_display.getGlassProxy(player)
+        component.glasses = glasses_display.getGlassesProxy(player)
         local mid = players[player].resolution.x/2
 
         -- Create the buttons for controlling the hud page

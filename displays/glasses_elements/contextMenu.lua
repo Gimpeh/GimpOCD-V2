@@ -56,7 +56,7 @@ end
 function contextMenu.onClick(eventName, address, player, x, y, button)
     print("contextMenu - Line 50: Handling onClick event")
     local suc, err = pcall(function()
-        component.glasses = require("displays.glasses_display").getGlassProxy(player)
+        component.glasses = require("displays.glasses_display").getGlassesProxy(player)
         if eventName == "hud_click" and button == 0 then
             print("contextMenu - Line 54: Left-click detected")
             if players[player].contextMenu.elements.backgroundBox.contains(x, y) then
@@ -94,7 +94,7 @@ end
 function contextMenu.remove(player)
     print("contextMenu - Line 84: Removing context menu for player")
     local suc, err = pcall(function()
-        component.glasses = require("displays.glasses_display").getGlassProxy(player)
+        component.glasses = require("displays.glasses_display").getGlassesProxy(player)
 
         print("contextMenu - Line 87: Removing background box")
         players[player].contextMenu.elements.backgroundBox.remove()
