@@ -278,7 +278,7 @@ glasses_display.onDrag = function(eventName, address, player, x, y, button)
                     return false
                 else
                     print("glasses_display - Line 243: HUD setup onDrag triggered for player: " .. player)
-                    players[player].hudSetup.onDrag(eventName, address, player, x, y, button)
+                    hudSetup.onDrag(eventName, address, player, x, y, button)
                 end
             end
         end

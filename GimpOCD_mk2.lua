@@ -29,6 +29,17 @@ local function onClick(eventName, address, player, x, y, button)
     end)
 end
 
+local function onDrag(eventName, address, player, x, y, button)
+    print("Handling onDrag event")
+    local suc, err = pcall(function()
+        if eventName == "hud_drag" then
+            print("Drag detected")
+            glasses_display.onDrag(eventName, address, player, x, y, button)
+        end
+    end)
+end
+
+event.listen("hud_drag", onDrag)
 event.listen("hud_click", onClick)
 
 while true do
