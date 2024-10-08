@@ -17,7 +17,7 @@ function contextMenu.init(x, y, player, funcTable)
 
     local suc, err = pcall(function()
         print("contextMenu - Line 16: Getting glasses proxy for player")
-        component.glasses = require("lib.glasses_display").getGlassProxy(player)
+        component.glasses = require("displays.glasses_display").getGlassesProxy(player)
 
         if players[player].contextMenu then
             print("contextMenu - Line 19: Removing existing context menu")
