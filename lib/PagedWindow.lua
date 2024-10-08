@@ -48,7 +48,7 @@ end
 -- Function to clear currently displayed items
 function PagedWindow:clearDisplayedItems()
     print("PagedWindow - Line 34: Clearing displayed items.")
-    local success, err = pcall(function()
+    --local success, err = pcall(function()
         print("PagedWindow - Line 36: Starting clearDisplayedItems.")
         for _, element2 in ipairs(self.currentlyDisplayed) do
             print("PagedWindow - Line 39: Trying Removing element.")
@@ -59,10 +59,10 @@ function PagedWindow:clearDisplayedItems()
             end
         end
         self.currentlyDisplayed = {}
-    end)
-    if not success then
-        print("PagedWindow - Line 42: Error in clearDisplayedItems: " .. tostring(err))
-    end
+    --end)
+    --if not success then
+    --    print("PagedWindow - Line 42: Error in clearDisplayedItems: " .. tostring(err))
+    --end
     print("") -- Blank line for readability
 end
 

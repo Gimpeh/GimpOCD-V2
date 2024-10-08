@@ -61,7 +61,7 @@ function item_overseer.init_tracked(player)
 end
 
 function item_overseer.init_crafting(player)
-    local suc, err = pcall(function()
+    --local suc, err = pcall(function()
         print("item_overseer: Initializing crafting items for player " .. tostring(player))
         print("item_overseer: Getting glasses proxy for player " .. tostring(player))
         component.glasses = require("displays.glasses_display").getGlassesProxy(player)
@@ -78,12 +78,12 @@ function item_overseer.init_crafting(player)
         item_overseer.players[player].display = PagedWindow.new(item_overseer.players[player].crafting_items, 150, 30, {x1=window.x, y1=window.y+44,x2=window.x+window.width, y2=window.y+window.height-22}, 3, levelMaintainer, {player})
         print("item_overseer: Displaying crafting items for player " .. tostring(player))
         item_overseer.players[player].display:displayItems()
-    end)
-    if not suc then print(err) end
+    --end)
+    --if not suc then print(err) end
 end
 
 function item_overseer.init(player)
-    local suc, err = pcall(function()
+    --local suc, err = pcall(function()
         print("item_overseer: Initializing item overseer for player " .. tostring(player))
         print("item_overseer: Getting glasses proxy for player " .. tostring(player))
         component.glasses = require("displays.glasses_display").getGlassesProxy(player)
@@ -136,15 +136,15 @@ function item_overseer.init(player)
         players[player].currentModules.item_overseer = true
         players[player].modules[cur_page].item_overseer.onClick = item_overseer.onClick
         players[player].modules[cur_page].item_overseer.onClickRight = item_overseer.onClickRight
-    end)
-    if not suc then print(err) end
+    --end)
+    --if not suc then print(err) end
 end
 
 -----------------------------------------------------
 --- Updated Element Creation Functions
 
 itemBox_main = function(x, y, itemstack, player)
-    local suc, err = pcall(function()
+    --local suc, err = pcall(function()
         print("item_overseer: Creating main item box for player " .. tostring(player) .. ", itemstack: " .. tostring(itemstack.label))
         component.glasses = require("displays.glasses_display").getGlassesProxy(player)
         local function mainStorage_itemBox_context()
@@ -160,12 +160,12 @@ itemBox_main = function(x, y, itemstack, player)
         print("item_overseer: Attaching context menu to main item box for player " .. tostring(player))
         local new_itemBox = widgetsAreUs.attachOnClickRight(itemBox, mainStorage_itemBox_context)
         return new_itemBox
-    end)
-    if not suc then print(err) end
+    --end)
+    --if not suc then print(err) end
 end
 
 itemBox_tracked = function(x, y, itemstack, player)
-    local suc, err = pcall(function()
+    --local suc, err = pcall(function()
         print("item_overseer: Creating tracked item box for player " .. tostring(player) .. ", itemstack: " .. tostring(itemstack.label))
         component.glasses = require("displays.glasses_display").getGlassesProxy(player)
         local function tracked_itemBox_context()
@@ -193,8 +193,8 @@ itemBox_tracked = function(x, y, itemstack, player)
         print("item_overseer: Attaching context menu to tracked item box for player " .. tostring(player))
         local new_itemBox = widgetsAreUs.attachOnClickRight(itemBox, tracked_itemBox_context)
         return new_itemBox
-    end)
-    if not suc then print(err) end
+    --end)
+    --if not suc then print(err) end
 end
 
 levelMaintainer = function(x, y, argsTable, player)
@@ -254,6 +254,7 @@ item_overseer.onClick = function(eventName, address, player, x, y, button)
             end
         end
     end)
+    if not suc then print(err) end
     return true
 end
 
@@ -280,6 +281,7 @@ item_overseer.onClickRight = function(eventName, address, player, x, y, button)
             end
         end
     end)
+    if not suc then print(err) end
 end
 
 return item_overseer
