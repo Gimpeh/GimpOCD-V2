@@ -12,10 +12,10 @@ local itemBox_main
 local itemBox_tracked
 local levelMaintainer
 
-local function prev(player) item_overseer.players[player].display:prevPage() end
-local function next(player) item_overseer.players[player].display:nextPage() end
+function item_overseer.prev(player) item_overseer.players[player].display:prevPage() end
+function item_overseer.next(player) item_overseer.players[player].display:nextPage() end
 
-local function init_display_storage(player)
+function item_overseer.init_display_storage(player)
     local suc, err = pcall(function()
         print("item_overseer: Initializing display storage for player " .. tostring(player))
         print("item_overseer: Getting glasses proxy for player " .. tostring(player))
@@ -38,7 +38,7 @@ local function init_display_storage(player)
     if not suc then print(err) end
 end
 
-local function init_tracked(player)
+function item_overseer.init_tracked(player)
     local suc, err = pcall(function()
         print("item_overseer: Initializing tracked items for player " .. tostring(player))
         print("item_overseer: Getting glasses proxy for player " .. tostring(player))
@@ -60,7 +60,7 @@ local function init_tracked(player)
     if not suc then print(err) end
 end
 
-local function init_crafting(player)
+function item_overseer.init_crafting(player)
     local suc, err = pcall(function()
         print("item_overseer: Initializing crafting items for player " .. tostring(player))
         print("item_overseer: Getting glasses proxy for player " .. tostring(player))
@@ -126,9 +126,9 @@ function item_overseer.init(player)
         item_overseer.players[player].elements.down_button = down_button
 
         print("item_overseer: Creating display control buttons for player " .. tostring(player))
-        local display_main = widgetsAreUs.symbolBox(window.x+3, window.y+22, "M", c.navbutton, init_display_storage, player)
-        local display_monitored = widgetsAreUs.symbolBox(window.x+window.width-44, window.y+window.height-22, "T", c.navbutton, init_tracked, player)
-        local display_crafting = widgetsAreUs.symbolBox(window.x+window.width-22, window.y+window.height-22, "C", c.navbutton, init_crafting, player)
+        local display_main = widgetsAreUs.symbolBox(window.x+3, window.y+22, "M", c.navbutton, item_overseer.init_display_storage, player)
+        local display_monitored = widgetsAreUs.symbolBox(window.x+window.width-44, window.y+window.height-22, "T", c.navbutton, item_overseer.init_tracked, player)
+        local display_crafting = widgetsAreUs.symbolBox(window.x+window.width-22, window.y+window.height-22, "C", c.navbutton, item_overseer.init_crafting, player)
         item_overseer.players[player].elements.button_main = display_main
         item_overseer.players[player].elements.button_tracked = display_monitored
         item_overseer.players[player].elements.button_crafting = display_crafting
