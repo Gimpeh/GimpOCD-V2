@@ -3,6 +3,7 @@ local modules = require("displays.modules.modules")
 local hudSetup = require("displays.glasses_elements.hudSetup")
 local widgetsAreUs = require("lib.widgetsAreUs")
 local c = require("lib.gimp_colors")
+local contextMenu = require("displays.glasses_elements.contextMenu")
 
 -------------------------------------------------------
 --- Module Context Vars & Functions + Forward Decs
@@ -224,7 +225,7 @@ glasses_display.onClick = function(eventName, address, player, x, y, button)
 
         if eventName == "hud_click" and button == 0 then
             if players[player].contextMenu and players[player].contextMenu.elements and players[player].contextMenu.elements.backgroundBox.contains(x, y) then
-                players[player].contextMenu.onClick(eventName, address, player, x, y, button)
+                contextMenu.onClick(eventName, address, player, x, y, button)
             elseif short[1].box.contains(x, y) then
                 short[1].onClick()
             elseif short[2].box.contains(x, y) then
@@ -253,10 +254,10 @@ glasses_display.onClickRight = function(eventName, address, player, x, y, button
     local suc, err = pcall(function()
         if eventName == "hud_click" and button == 1 then
             if players[player].contextMenu and players[player].contextMenu.elements and players[player].contextMenu.elements.backgroundBox.contains(x, y) then
-                players[player].contextMenu.onClickRight(eventName, address, player, x, y, button)
+                contextMenu.onClickRight(eventName, address, player, x, y, button)
             elseif players[player].hudSetup.elements then
                 print("glasses_display - Line 225: HUD setup onClickRight triggered for player: " .. player)
-                players[player].hudSetup.onClickRight(eventName, address, player, x, y, button)
+                hudSetup.onClickRight(eventName, address, player, x, y, button)
             else
                 for moduleName, module in pairs(players[player].modules[players[player].current_hudPage]) do
                     if module and module.elements and module.elements.backgroundBox and module.elements.backgroundBox.contains(x, y) then
