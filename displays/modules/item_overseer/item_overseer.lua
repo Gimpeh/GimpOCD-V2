@@ -9,6 +9,7 @@ item_overseer.players = {}
 
 local itemBox_main
 local itemBox_tracked
+local levelMaintainer
 
 local function init_display_storage(player)
     component.glasses = require("displays.glasses_display").getGlassesProxy(player)
@@ -43,7 +44,7 @@ local function init_crafting(player)
         item_overseer.players[player].display:clearDisplayedItems()
         item_overseer.players[player].display = nil
     end
-    item_overseer.players[player].display = PagedWindow.new(item_overseer.players[player].crafting_items, 150, 30, {x1=window.x, y1=window.y+44,x2=window.x+window.width, y2=window.y+window.height-22}, 3, widgetsAreUs.levelMaintainer, {player})
+    item_overseer.players[player].display = PagedWindow.new(item_overseer.players[player].crafting_items, 150, 30, {x1=window.x, y1=window.y+44,x2=window.x+window.width, y2=window.y+window.height-22}, 3, levelMaintainer, {player})
     item_overseer.players[player].display:displayItems()
 end
 
@@ -125,6 +126,23 @@ itemBox_tracked = function(x, y, itemstack, player)
     return new_itemBox
 end
 
-
+levelMaintainer = function(x, y, argsTable, player)
+    component.glasses = require("displays.glasses_display").getGlassesProxy(player)
+    local function levelMaintainer_context()
+        local context = contextMenu.init(x, y, player, {
+            [1] = {text = "Remove From Crafting (C)", func = function()
+                item_overseer.players[player].crafting_items[argsTable.itemStack.label] = nil
+                item_overseer.players[player].display:clearDisplayedItems()
+                item_overseer.players[player].display = PagedWindow.new(item_overseer.players[player].crafting_items, 150, 30, {x1=item_overseer.players[player].window.x, y1=item_overseer.players[player].window.y+44,x2=item_overseer.players[player].window.x+item_overseer.players[player].window.width, y2=item_overseer.players[player].window.y+item_overseer.players[player].window.height-22}, 3, levelMaintainer, {player})
+                item_overseer.players[player].display:displayItems()
+                end, args = {}}
+        })
+        return true
+    end
+    
+    local lm = widgetsAreUs.levelMaintainer(x, y, argsTable)
+    local new_lm = widgetsAreUs.attachOnClickRight(lm, levelMaintainer_context)
+    return new_lm
+end
 
 return item_overseer

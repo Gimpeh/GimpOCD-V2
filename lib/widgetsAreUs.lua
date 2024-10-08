@@ -236,7 +236,6 @@ function widgetsAreUs.levelMaintainer(x, y, argsTable)
         elseif amountText.box.contains(x1, y1) then
             amount.onClick()
         end
-        
     end
     })
 end
