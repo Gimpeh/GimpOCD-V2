@@ -48,13 +48,13 @@ function hudSetup.init(player)
         for i = 1, horizontalSteps do
             local line = widgetsAreUs.createBox(step*i, 0, 1, res.y, {0.1333, 0.1333, 0.1333}, 0.4)
             table.insert(grid, line)
-            table.insert(xThresholds, step*i)
+            table.insert(yThresholds, step*i)
             print("hudSetup - Line 49: Created horizontal grid line at position " .. step*i)
         end
         for i = 0, horizontalSteps do
             local line = widgetsAreUs.createBox(div2+step*i, 0, 1, res.y, {0.1333, 0.1333, 0.1333}, 0.4)
             table.insert(grid, line)
-            table.insert(xThresholds, div2+step*i)
+            table.insert(yThresholds, div2+step*i)
             print("hudSetup - Line 53: Created horizontal grid line at position " .. (div2+step*i))
         end
         step = res.y / verticalSteps
@@ -62,7 +62,7 @@ function hudSetup.init(player)
         for i = 1, verticalSteps do
             local line = widgetsAreUs.createBox(0, step*i, res.x, 1, {0.1333, 0.1333, 0.1333}, 0.4)
             table.insert(grid, line)
-            table.insert(yThresholds, step*i)
+            table.insert(xThresholds, step*i)
             print("hudSetup - Line 57: Created vertical grid line at position " .. step*i)
         end
 
