@@ -133,6 +133,8 @@ function item_overseer.init(player)
         item_overseer.players[player].elements.button_crafting = display_crafting
 
         players[player].currentModules.item_overseer = true
+        players[player].modules[cur_page].item_overseer.onClick = item_overseer.onClick
+        players[player].modules[cur_page].item_overseer.onClickRight = item_overseer.onClickRight
     end)
     if not suc then print(err) end
 end
