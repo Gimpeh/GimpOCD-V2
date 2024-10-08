@@ -14,7 +14,7 @@ function hudSetup.init(player)
     print("hudSetup - Line 18: Initializing HUD setup for player")
     local suc, err = pcall(function()
         local glasses_display = require("displays.glasses_display")
-        component.glasses = require("displays.glasses_display").getGlassesProxy(player)
+        component.glasses = glasses_display.getGlassProxy(player)
         local xThresholds = {}
         local yThresholds = {}
         local res = glasses_display.getResolution(player)
