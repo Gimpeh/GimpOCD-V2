@@ -224,8 +224,12 @@ glasses_display.onClick = function(eventName, address, player, x, y, button)
         local short = players[player].glasses_display.elements
 
         if eventName == "hud_click" and button == 0 then
-            if players[player].contextMenu and players[player].contextMenu.elements and players[player].contextMenu.elements.backgroundBox.contains(x, y) then
-                contextMenu.onClick(eventName, address, player, x, y, button)
+            if players[player].contextMenu and players[player].contextMenu.elements then
+                if players[player].contextMenu.elements.backgroundBox.contains(x, y) then
+                    contextMenu.onClick(eventName, address, player, x, y, button)
+                else
+                    contextMenu.remove(player)
+                end
             elseif short[1].box.contains(x, y) then
                 short[1].onClick()
             elseif short[2].box.contains(x, y) then
@@ -276,6 +280,7 @@ glasses_display.onDrag = function(eventName, address, player, x, y, button)
         if eventName == "hud_drag" then
             if players[player].hudSetup.elements then 
                 if players[player].contextMenu and players[player].contextMenu.elements then
+                    print("glasses_display - Line 242: Context Menu Exists")
                     return false
                 else
                     print("glasses_display - Line 243: HUD setup onDrag triggered for player: " .. player)

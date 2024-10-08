@@ -54,15 +54,15 @@ function contextMenu.init(x, y, player, funcTable)
 end
 
 function contextMenu.onClick(eventName, address, player, x, y, button)
-    print("contextMenu - Line 50: Handling onClick event")
+    print("contextMenu - Line 50: Handling onClick event", x, y)
     local suc, err = pcall(function()
         component.glasses = require("displays.glasses_display").getGlassesProxy(player)
         if eventName == "hud_click" and button == 0 then
             print("contextMenu - Line 54: Left-click detected")
             if players[player].contextMenu.elements.backgroundBox.contains(x, y) then
-                local choice = (y - players[player].contextMenu.elements.backgroundBox.y) / choiceHeight
+                local choice = math.floor((y - players[player].contextMenu.elements.backgroundBox.y) / choiceHeight)
                 print("contextMenu - Line 57: Choice selected - " .. choice)
-                local func = players[player].contextMenu.funcTable[choice].func
+                local func = players[player].contextMenu.funcTable[choice]
                 if players[player].contextMenu.funcTable[choice].args and players[player].contextMenu.funcTable[choice].args[1] then
                     print("contextMenu - Line 60: Calling function with arguments")
                     func(table.unpack(players[player].contextMenu.funcTable[choice].args))
