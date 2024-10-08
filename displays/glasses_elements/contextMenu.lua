@@ -7,6 +7,7 @@ contextMenu.remove = nil
 local choiceHeight = 10
 
 function contextMenu.init(x, y, player, funcTable)
+    print("contextMenu - Line 10: Initializing context menu")
     --[[
     funcTable = {
         [1] = {text = "text", func = function, args = {args}},
@@ -14,69 +15,99 @@ function contextMenu.init(x, y, player, funcTable)
             and so on
     ]]
 
-    --clear pre-existing (if any)
-    component.glasses = require("lib.glasses_display").getGlassProxy(player)
+    local suc, err = pcall(function()
+        print("contextMenu - Line 16: Getting glasses proxy for player")
+        component.glasses = require("lib.glasses_display").getGlassProxy(player)
 
-    if players[player].contextMenu then
-        contextMenu.remove(player)
-    end
-
-    if not players[player].contextMenu then
-        players[player].contextMenu = {}
-    end
-    players[player].contextMenu.elements = {}
-    players[player].contextMenu.elements.backgroundBox = widgetsAreUs.createBox(x, y, 100, 1, c.contextMenuBackground, 0.3)
-
-    local i=0
-    for key, args in ipairs(funcTable) do
-
-        local text = widgetsAreUs.text(x+1, y+1+(choiceHeight*i), args.text, 1.0, c.contextMenuPrimaryColour)
-        table.insert(players[player].contextMenu.elements, text)
-        if i > 0 then
-            local divisor = widgetsAreUs.createBox(x, y+(choiceHeight*i)-1, 100, 1, c.contextMenuBackground, 0.3)
-            table.insert(players[player].contextMenu.elements, divisor)
+        if players[player].contextMenu then
+            print("contextMenu - Line 19: Removing existing context menu")
+            contextMenu.remove(player)
         end
-        i = i + 1
-    end
-    players[player].contextMenu.elements.backgroundBox.setSize(i*choiceHeight, 100)
-    players[player].contextMenu.funcTable = funcTable
+
+        if not players[player].contextMenu then
+            print("contextMenu - Line 23: Creating new context menu structure")
+            players[player].contextMenu = {}
+        end
+
+        players[player].contextMenu.elements = {}
+        players[player].contextMenu.elements.backgroundBox = widgetsAreUs.createBox(x, y, 100, 1, c.contextMenuBackground, 0.3)
+        print("contextMenu - Line 28: Created background box")
+
+        local i = 0
+        for key, args in ipairs(funcTable) do
+            print("contextMenu - Line 31: Adding option " .. args.text)
+            local text = widgetsAreUs.text(x + 1, y + 1 + (choiceHeight * i), args.text, 1.0, c.contextMenuPrimaryColour)
+            table.insert(players[player].contextMenu.elements, text)
+            if i > 0 then
+                print("contextMenu - Line 35: Adding divisor")
+                local divisor = widgetsAreUs.createBox(x, y + (choiceHeight * i) - 1, 100, 1, c.contextMenuBackground, 0.3)
+                table.insert(players[player].contextMenu.elements, divisor)
+            end
+            i = i + 1
+        end
+
+        print("contextMenu - Line 41: Setting background box size")
+        players[player].contextMenu.elements.backgroundBox.setSize(i * choiceHeight, 100)
+        players[player].contextMenu.funcTable = funcTable
+    end)
+    if not suc then print("contextMenu - Line 46: " .. err) end
 end
 
 function contextMenu.onClick(eventName, address, player, x, y, button)
-    component.glasses = require("displays.glasses_display").getGlassProxy(player)
-    if eventName == "hud_click" and button == 0 then
-        if players[player].contextMenu.elements.backgroundBox.contains(x, y) then
-            local choice = (y - players[player].contextMenu.elements.backgroundBox.y) / choiceHeight
-            local func = players[player].contextMenu.funcTable[choice].func
-            if players[player].contextMenu.funcTable[choice].args and players[player].contextMenu.funcTable[choice].args[1] then
-                func(table.unpack(players[player].contextMenu.funcTable[choice].args))
-            else
-                func()
+    print("contextMenu - Line 50: Handling onClick event")
+    local suc, err = pcall(function()
+        component.glasses = require("displays.glasses_display").getGlassProxy(player)
+        if eventName == "hud_click" and button == 0 then
+            print("contextMenu - Line 54: Left-click detected")
+            if players[player].contextMenu.elements.backgroundBox.contains(x, y) then
+                local choice = (y - players[player].contextMenu.elements.backgroundBox.y) / choiceHeight
+                print("contextMenu - Line 57: Choice selected - " .. choice)
+                local func = players[player].contextMenu.funcTable[choice].func
+                if players[player].contextMenu.funcTable[choice].args and players[player].contextMenu.funcTable[choice].args[1] then
+                    print("contextMenu - Line 60: Calling function with arguments")
+                    func(table.unpack(players[player].contextMenu.funcTable[choice].args))
+                else
+                    print("contextMenu - Line 63: Calling function without arguments")
+                    func()
+                end
             end
+            print("contextMenu - Line 66: Removing context menu")
+            contextMenu.remove(player)
+            return true
         end
-        contextMenu.remove(player)
-        return true
-    end
+    end)
+    if not suc then print("contextMenu - Line 70: " .. err) end
 end
 
 function contextMenu.onClickRight(eventName, address, player, x, y, button)
-    if eventName == "hud_click" and button == 1 then
-        contextMenu.remove(player)
-        return true
-    end
+    print("contextMenu - Line 74: Handling onClickRight event")
+    local suc, err = pcall(function()
+        if eventName == "hud_click" and button == 1 then
+            print("contextMenu - Line 76: Right-click detected - removing context menu")
+            contextMenu.remove(player)
+            return true
+        end
+    end)
+    if not suc then print("contextMenu - Line 80: " .. err) end
 end
 
 function contextMenu.remove(player)
-    component.glasses = require("displays.glasses_display").getGlassProxy(player)
-    
-    players[player].contextMenu.elements.backgroundBox.remove()
-    players[player].contextMenu.elements.backgroundBox = nil
-    for i, element in ipairs(players[player].contextMenu.elements) do
-        element.remove()
-        players[player].contextMenu.elements[i] = nil
-    end
-    players[player].contextMenu.elements = nil
-    return true
+    print("contextMenu - Line 84: Removing context menu for player")
+    local suc, err = pcall(function()
+        component.glasses = require("displays.glasses_display").getGlassProxy(player)
+
+        print("contextMenu - Line 87: Removing background box")
+        players[player].contextMenu.elements.backgroundBox.remove()
+        players[player].contextMenu.elements.backgroundBox = nil
+        for i, element in ipairs(players[player].contextMenu.elements) do
+            print("contextMenu - Line 91: Removing element " .. i)
+            element.remove()
+            players[player].contextMenu.elements[i] = nil
+        end
+        players[player].contextMenu.elements = nil
+        return true
+    end)
+    if not suc then print("contextMenu - Line 96: " .. err) end
 end
 
 return contextMenu

@@ -1,3 +1,5 @@
+print("modules.lua loaded and processing")
+
 local me_cpu_controller = require("displays.modules.autocrafting_controller.me_cpu_controller").init
 local item_overseer = require("displays.modules.item_overseer.item_overseer").init
 local machine_overseer = require("displays.modules.machine_overseer.machine_overseer").init
@@ -13,5 +15,7 @@ local modules = {
     --robot_director = robot_director,
     --text_editor = text_editor
 }
+
+print("modules.lua finished processing")
 
 return modules

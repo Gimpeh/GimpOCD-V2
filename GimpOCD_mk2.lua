@@ -3,6 +3,12 @@ local event = require("event")
 component = require("component")
 local glasses_display = require("displays.glasses_display")
 
+verbosity = true
+if not verbosity then
+    print = function() end
+end
+
+
 print("removing all widgets")
 component.glasses.removeAll()
 
