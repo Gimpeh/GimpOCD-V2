@@ -197,13 +197,7 @@ init_phase2 = function(player)
         players[player].glasses_display.elements.grid_button = widgetsAreUs.symbolBox(mid-43, 5, "G", c.pagesButton_active, function()
             local suc, err = pcall(function()
                 if players[player].hudSetup.elements then
-                    for key, element in pairs(players[player].hudSetup.elements) do
-                        element.remove()
-                        players[player].hudSetup.elements[key] = nil
-                    end
-                    players[player].hudSetup.elements = nil
-                    players[player].hudSetup.xThresholds = {}
-                    players[player].hudSetup.yThresholds = {}
+                    hudSetup.remove(player)
                 else
                     print("glasses_display - Line 176: Initializing HUD setup for player: " .. player)
                     hudSetup.init(player)
