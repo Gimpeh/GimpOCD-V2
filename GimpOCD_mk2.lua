@@ -1,4 +1,4 @@
-package.path = package.path .. ";/GimpOCD-V2/?.lua"
+package.path = package.path .. ";/home/GimpOCD-V2/?.lua"
 local event = require("event")
 component = require("component")
 local glasses_display = require("displays.glasses_display")
