@@ -120,8 +120,8 @@ function item_overseer.init(player)
         item_overseer.players[player].elements.search_bar = search_bar
 
         print("item_overseer: Creating navigation buttons for player " .. tostring(player))
-        local up_button = widgetsAreUs.symbolBox(window.x + ((window.width/2)-10), window.y+22, "▲", c.navbutton, prev, player)
-        local down_button = widgetsAreUs.symbolBox(window.x + ((window.width/2)-10), window.y+window.height-22, "▼", c.navbutton, next, player)
+        local up_button = widgetsAreUs.symbolBox(window.x + ((window.width/2)-10), window.y+22, "▲", c.navbutton, item_overseer.prev, player)
+        local down_button = widgetsAreUs.symbolBox(window.x + ((window.width/2)-10), window.y+window.height-22, "▼", c.navbutton, item_overseer.next, player)
         item_overseer.players[player].elements.up_button = up_button
         item_overseer.players[player].elements.down_button = down_button
 
