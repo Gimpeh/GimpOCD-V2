@@ -94,6 +94,8 @@ gimp_colors.tabs = gimp_colors.darkpurple
 gimp_colors.clicked = gimp_colors.yellow
 gimp_colors.alertnotification = gimp_colors.crimson
 
+gimp_colors.contextMenuBackground = gimp_colors.silver
+
 gimp_colors.derp = {1.0, 0.8, 0.796}
 
 return gimp_colors
