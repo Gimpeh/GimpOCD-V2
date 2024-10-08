@@ -30,9 +30,6 @@ function widgetsAreUs.attachCoreFunctions(obj)
                     print("widgetsAreUs - Line 31: Removing nested object with getID.")
                     component.glasses.removeObject(v.getID())
                     obj[k] = nil
-                else
-                    print("widgetsAreUs - Line 35: Removing non-table element.")
-                    obj[k] = nil
                 end
             end
             obj = nil
@@ -235,8 +232,8 @@ function widgetsAreUs.symbolBox(x, y, symbolText, colorOrGreen, func, args)
 
     box.onClick = function()
         print("widgetsAreUs - Line 199: Symbol box clicked.")
-        func(args)
         widgetsAreUs.flash(box)
+        func(args)
     end
 
     return widgetsAreUs.attachCoreFunctions({box = box, symbol = symbol, onClick = box.onClick})
