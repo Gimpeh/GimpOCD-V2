@@ -19,7 +19,7 @@ function contextMenu.init(x, y, player, funcTable)
         print("contextMenu - Line 16: Getting glasses proxy for player")
         component.glasses = require("displays.glasses_display").getGlassesProxy(player)
 
-        if players[player].contextMenu then
+        if players[player].contextMenu and players[player].contextMenu.elements then
             print("contextMenu - Line 19: Removing existing context menu")
             contextMenu.remove(player)
         end
