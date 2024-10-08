@@ -48,7 +48,7 @@ end
 -- Function to clear currently displayed items
 function PagedWindow:clearDisplayedItems()
     print("PagedWindow - Line 34: Clearing displayed items.")
-        for _, element in ipairs(self.currentlyDisplayed) do
+        for _, element in pairs(self.currentlyDisplayed) do
             print("PagedWindow - Line 39: Trying Removing element.")
             if element.remove then
                 print("element has remove method")
