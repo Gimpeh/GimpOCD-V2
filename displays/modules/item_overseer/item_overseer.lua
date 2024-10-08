@@ -4,9 +4,16 @@ local contextMenu = require("displays.glasses_elements.contextMenu")
 local PagedWindow = require("lib.PagedWindow")
 
 local item_overseer = {}
-item_overseer.players = {}
+
 item_overseer.onClick = nil
 item_overseer.onClickRight = nil
+item_overseer.load = nil
+item_overseer.save = nil
+item_overseer.update = nil
+item_overseer.remove = nil
+
+item_overseer.players = {}
+item_overseer.crafts = {}
 
 local itemBox_main
 local itemBox_tracked
@@ -115,8 +122,33 @@ function item_overseer.init(player)
         item_overseer.players[player].elements.background = background
         players[player].modules[cur_page].item_overseer.elements.backgroundBox = background
 
+        local search_bar
         print("item_overseer: Creating search bar element for player " .. tostring(player))
-        local search_bar = widgetsAreUs.searchBar(window.x, window.y, window.width)
+        search_bar = widgetsAreUs.attachOnClickRight(widgetsAreUs.attachOnClick(widgetsAreUs.searchBar(window.x, window.y, window.width), function(eventName, address, player, x, y, button)
+            local function string_contains(str, pattern) -- left click
+                return string.find(str, pattern) ~= nil
+            end
+
+            local search_items = {}
+
+            local search_text = widgetsAreUs.handleTextInput(search_bar.text, player)
+            if search_text then
+                local items = component.me_interface.getItemsInNetwork()
+                for index, item in ipairs(items) do
+                   if string_contains(item.label, search_text) then
+                       table.insert(search_items, item)
+                   end
+                end
+                item_overseer.players[player].display:clearDisplayedItems()
+                item_overseer.players[player].display = nil
+                item_overseer.players[player].display = PagedWindow.new(search_items, 80, 35, {x1=window.x, y1=window.y+44,x2=window.x+window.width, y2=window.y+window.height-22}, 3, itemBox_main, {player})
+                item_overseer.players[player].display:displayItems()
+            end
+        end), function(eventName, address, player, x, y, button) -- Right-click
+            local context = contextMenu.init(x, y, player, {
+                [1] = {text = "Remove Item Overseer", func = item_overseer.remove, args = {player}}
+            })
+        end)
         item_overseer.players[player].elements.search_bar = search_bar
 
         print("item_overseer: Creating navigation buttons for player " .. tostring(player))
@@ -126,7 +158,11 @@ function item_overseer.init(player)
         item_overseer.players[player].elements.down_button = down_button
 
         print("item_overseer: Creating display control buttons for player " .. tostring(player))
-        local display_main = widgetsAreUs.symbolBox(window.x+3, window.y+22, "M", c.navbutton, item_overseer.init_display_storage, player)
+        local display_main = widgetsAreUs.attachOnClickRight(widgetsAreUs.symbolBox(window.x+3, window.y+22, "M", c.navbutton, item_overseer.init_display_storage, player), function(eventName, address, player, x, y, button)
+            local context = contextMenu.init(x, y, player, {
+                [1] = {text = "Remove Item Overseer", func = item_overseer.remove, args = {player}}
+            })
+        end)
         local display_monitored = widgetsAreUs.symbolBox(window.x+window.width-44, window.y+window.height-22, "T", c.navbutton, item_overseer.init_tracked, player)
         local display_crafting = widgetsAreUs.symbolBox(window.x+window.width-22, window.y+window.height-22, "C", c.navbutton, item_overseer.init_crafting, player)
         item_overseer.players[player].elements.button_main = display_main
@@ -136,6 +172,8 @@ function item_overseer.init(player)
         players[player].currentModules.item_overseer = true
         players[player].modules[cur_page].item_overseer.onClick = item_overseer.onClick
         players[player].modules[cur_page].item_overseer.onClickRight = item_overseer.onClickRight
+
+        item_overseer.load(player)
     end)
     if not suc then print(err) end
 end
@@ -220,6 +258,38 @@ levelMaintainer = function(x, y, argsTable, player)
         return new_lm
 end
 
+local function level_maintaining()
+    local suc, err = pcall(function()
+        for key, player in pairs(item_overseer.players) do
+            for index, crafting_item in ipairs(item_overseer.players[player].crafting_items) do
+                local check = item_overseer.crafts[crafting_item.itemStack.label]
+                if check and check.isDone() or check.isCanceled() then
+                    item_overseer.crafts[crafting_item.itemStack.label] = nil
+                elseif check.hasFailed() then
+                    component.glasses = require("displays.glasses_display").getGlassesProxy(player)
+                    widgetsAreUs.alertMessage(c.red, "Crafting Failed: " .. crafting_item.itemStack.label, timing.three)
+                end
+            
+                if item_overseer.crafts[crafting_item.itemStack.label] then
+                
+                else
+                    local items_in_storage = component.me_interface.getItemsInNetwork(crafting_item.itemStack)
+                    if items_in_storage and items_in_storage[1] and items_in_storage[1].isCraftable then
+                        if items_in_storage[1].size < tonumber(widgetsAreUs.trim(crafting_item.amount.getText())) then
+                            local craft = component.me_interface.getCraftables({label = items_in_storage[1].label, name = items_in_storage[1].name})[1].request(tonumber(widgetsAreUs.trim(crafting_item.batch.getText())))
+                            item_overseer.crafts[crafting_item.itemStack.label] = craft
+                        end
+                    elseif items_in_storage and items_in_storage[1] and not items_in_storage[1].isCraftable then
+                        component.glasses = require("displays.glasses_display").getGlassesProxy(player)
+                        widgetsAreUs.alertMessage(c.red, "Item Not Craftable: " .. crafting_item.itemStack.label, timing.three)
+                    end
+                end
+            end
+        end
+    end)
+    if not suc then print("item_overseer.update Error - " .. tostring(err)) end
+end
+
 -----------------------------------------------------
 --- Command and Control
 
@@ -234,13 +304,13 @@ item_overseer.onClick = function(eventName, address, player, x, y, button)
                     if key == "background" then
                         print("skipping background")
                     elseif element.box.contains(x, y) then
-                        element.onClick(x, y)
+                        element.onClick(eventName, address, player, x, y, button)
                         return
                     end
                 end
                 for index, element in ipairs(item_overseer.players[player].display.currentlyDisplayed) do
                     if element.box.contains(x, y) then
-                        element.onClick(x, y)
+                        element.onClick(eventName, address, player, x, y, button)
                         return
                     end
                 end
@@ -263,13 +333,13 @@ item_overseer.onClickRight = function(eventName, address, player, x, y, button)
                     if key == "background" then
                         print("skipping background")
                     elseif element.box.contains(x, y) then
-                        element.onClickRight()
+                        element.onClickRight(eventName, address, player, x, y, button)
                         return true
                     end
                 end
                 for index, element in ipairs(item_overseer.players[player].display.currentlyDisplayed) do
                     if element.box.contains(x, y) then
-                        element.onClickRight()
+                        element.onClickRight(eventName, address, player, x, y, button)
                         return true
                     end
                 end
@@ -279,6 +349,44 @@ item_overseer.onClickRight = function(eventName, address, player, x, y, button)
         end
     end)
     if not suc then print(err) end
+end
+
+local update_counter = 0
+
+function item_overseer.update()
+    update_counter = update_counter + 1
+    if update_counter % 5 == 0 then
+        for key, player in pairs(item_overseer.players) do
+            component.glasses = require("displays.glasses_display").getGlassesProxy(player)
+            for index, displayed_item in ipairs(item_overseer.players[player].display.currentlyDisplayed) do
+                if displayed_item.update then
+                    displayed_item.update()
+                end
+            end
+        end
+    end
+    if update_counter % 15 == 0 then
+        level_maintaining()
+    end
+end
+
+function item_overseer.setVisible(visible, player)
+    for key, element in pairs(item_overseer.players[player].elements) do
+        element.setVisible(visible)
+    end
+    for index, element in ipairs(item_overseer.players[player].display.currentlyDisplayed) do
+        element.setVisible(visible)
+    end
+end
+
+function item_overseer.remove(player)
+    for key, element in pairs(item_overseer.players[player].elements) do
+        element.remove()
+    end
+    if item_overseer.players[player].display then
+        item_overseer.players[player].display:clearDisplayedItems()
+        item_overseer.players[player].display = nil
+    end
 end
 
 return item_overseer

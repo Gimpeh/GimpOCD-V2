@@ -2,12 +2,24 @@ package.path = package.path .. ";/home/GimpOCD-V2/?.lua"
 local event = require("event")
 component = require("component")
 local glasses_display = require("displays.glasses_display")
+local time = require("lib.timing")
+local shell = require("shell")
 
-verbosity = true
+local args, options = shell.parse(...)
+
+local verbosity = false
+if options and options.verbose then
+    verbosity = true
+end
 if not verbosity then
     print = function() end
 end
 
+if args and args[1] and type(args[1]) == "number" then
+    time(args[1])
+else
+    time(1)
+end
 
 print("removing all widgets")
 component.glasses.removeAll()

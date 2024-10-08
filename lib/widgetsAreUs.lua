@@ -75,7 +75,7 @@ function widgetsAreUs.attachOnClick(obj, func)
     print("widgetsAreUs - Line 72: Attaching onClick function.")
     obj.onClick = function(...)
         print("widgetsAreUs - Line 74: onClick triggered.")
-        return func(obj, ...)
+        return func(...)
     end
     return obj
 end
@@ -84,7 +84,7 @@ function widgetsAreUs.attachOnClickRight(obj, func)
     print("widgetsAreUs - Line 79: Attaching onClickRight function.")
     obj.onClickRight = function(...)
         print("widgetsAreUs - Line 81: onClickRight triggered.")
-        return func(obj, ...)
+        return func(...)
     end
     return obj
 end
@@ -97,25 +97,30 @@ function widgetsAreUs.trim(s)
     return (s:gsub("^%s*(.-)%s*$", "%1")):gsub("%c", "")
 end
 
-function widgetsAreUs.handleTextInput(textLabel)
+function widgetsAreUs.handleTextInput(textLabel, player)
+    local break_flag = false
+    local timer
     print("widgetsAreUs - Line 92: Handling text input.")
     textLabel.setText("")
     while true do
-        local _, _, _, character = event.pull("hud_keyboard")
-        if character == 13 then  -- Enter key
-            print("widgetsAreUs - Line 97: Enter key pressed, breaking loop.")
-            break
-        elseif character == 8 then  -- Backspace key
-            print("widgetsAreUs - Line 100: Backspace key pressed, removing last character.")
-            textLabel.setText(textLabel.getText():sub(1, -2))
-        else
-            print("widgetsAreUs - Line 103: Adding character to text.")
-            textLabel.setText(textLabel.getText() .. string.char(character))
+        if not timer then 
+            timer = event.timer(30, function() break_flag = true timer = nil end)
+        end
+        if break_flag then break end
+        local _, _, player_name, character = event.pull(7, "hud_keyboard")
+        if player == player_name then
+            if character == 13 then  -- Enter key
+                print("widgetsAreUs - Line 97: Enter key pressed, breaking loop.")
+                return widgetsAreUs.trim(textLabel.getText())
+            elseif character == 8 then  -- Backspace key
+                print("widgetsAreUs - Line 100: Backspace key pressed, removing last character.")
+                textLabel.setText(textLabel.getText():sub(1, -2))
+            else
+                print("widgetsAreUs - Line 103: Adding character to text.")
+                textLabel.setText(textLabel.getText() .. string.char(character))
+            end
         end
     end
-    local trimmedText = tostring(widgetsAreUs.trim(textLabel.getText()))
-    print("widgetsAreUs - Line 108: Returning trimmed text.")
-    return trimmedText
 end
 
 function widgetsAreUs.shorthandNumber(numberToConvert)

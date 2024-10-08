@@ -51,3 +51,16 @@ players[player] = {
     }
 }
 ]]
+
+--Add a FIXME button 
+--  and some basic mutexes on the onClicks to prevent double-click-breaking shit
+
+--Add persistance
+--  item_overseer
+--      tracked items
+--      crafting items
+
+--[[
+                    Level maintainers...
+                    they should check if the item in question is actually autocraftable, and give a pop-up if it isn't
+]]
