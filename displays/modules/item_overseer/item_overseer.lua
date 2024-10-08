@@ -94,8 +94,8 @@ itemBox_main = function(x, y, itemstack, player)
     component.glasses = require("displays.glasses_display").getGlassesProxy(player)
     local function mainStorage_itemBox_context()
         local context = contextMenu.init(x, y, player, {
-            [1] = {text = "Add To Tracked (T)", func = function() table.insert(item_overseer.monitored_items, itemstack) end, args = {}},
-            [2] = {text = "Add to Crafting (C)", func = function() item_overseer.crafting_items[itemstack.label] = {itemStack = itemstack, batch = 0, amount = 0} end, args = {}}
+            [1] = {text = "Add To Tracked (T)", func = function() table.insert(item_overseer.players[player].monitored_items, itemstack) end, args = {}},
+            [2] = {text = "Add to Crafting (C)", func = function() item_overseer.players[player].crafting_items[itemstack.label] = {itemStack = itemstack, batch = 0, amount = 0} end, args = {}}
         })
         return true
     end
@@ -109,8 +109,13 @@ itemBox_tracked = function(x, y, itemstack, player)
     component.glasses = require("displays.glasses_display").getGlassesProxy(player)
     local function tracked_itemBox_context()
         local context = contextMenu.init(x, y, player, {
-            [1] = {text = "Remove From Tracked (T)", func = function() table.remove(item_overseer.monitored_items, itemstack) end, args = {}},
-            [2] = {text = "Add to Crafting (C)", func = function() item_overseer.crafting_items[itemstack.label] = {itemStack = itemstack, batch = 0, amount = 0} end, args = {}}
+            [1] = {text = "Remove From Tracked (T)", func = function()
+                table.remove(item_overseer.players[player].monitored_items, itemstack)
+                item_overseer.players[player].display:clearDisplayedItems()
+                item_overseer.players[player].display = PagedWindow.new(item_overseer.players[player].monitored_items, 80, 35, {x1=item_overseer.players[player].window.x, y1=item_overseer.players[player].window.y+44,x2=item_overseer.players[player].window.x+item_overseer.players[player].window.width, y2=item_overseer.players[player].window.y+item_overseer.players[player].window.height-22}, 3, itemBox_tracked, {player})
+                item_overseer.players[player].display:displayItems()
+                end, args = {}},
+            [2] = {text = "Add to Crafting (C)", func = function() item_overseer.players[player].crafting_items[itemstack.label] = {itemStack = itemstack, batch = 0, amount = 0} end, args = {}}
         })
         return true
     end
