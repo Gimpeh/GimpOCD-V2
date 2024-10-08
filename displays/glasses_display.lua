@@ -1,5 +1,5 @@
 local event = require("event")
-local modules = require("modules.modules")
+local modules = require("displays.modules.modules")
 local hudSetup = require("displays.glasses_elements.hudSetup")
 local widgetsAreUs = require("lib.widgetsAreUs")
 local c = require("lib.gimp_colors")
