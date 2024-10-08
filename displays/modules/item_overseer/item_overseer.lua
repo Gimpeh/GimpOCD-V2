@@ -16,7 +16,7 @@ function item_overseer.prev(player) item_overseer.players[player].display:prevPa
 function item_overseer.next(player) item_overseer.players[player].display:nextPage() end
 
 function item_overseer.init_display_storage(player)
-    --local suc, err = pcall(function()
+    local suc, err = pcall(function()
         print("item_overseer: Initializing display storage for player " .. tostring(player))
         print("item_overseer: Getting glasses proxy for player " .. tostring(player))
         component.glasses = require("displays.glasses_display").getGlassesProxy(player)
@@ -34,8 +34,8 @@ function item_overseer.init_display_storage(player)
         item_overseer.players[player].display = PagedWindow.new(items, 80, 35, {x1=window.x, y1=window.y+44,x2=window.x+window.width, y2=window.y+window.height-22}, 3, itemBox_main, {player})
         print("item_overseer: Displaying items for player " .. tostring(player))
         item_overseer.players[player].display:displayItems()
-    --end)
-    --if not suc then print(err) end
+    end)
+    if not suc then print(err) end
 end
 
 function item_overseer.init_tracked(player)
