@@ -258,7 +258,7 @@ item_overseer.onClickRight = function(eventName, address, player, x, y, button)
                 for key, element in pairs(item_overseer.players[player].elements) do
                     if key == "background" then
                         print("skipping background")
-                    elseif element.background.contains(x, y) then
+                    elseif element.box.contains(x, y) then
                         element.onClickRight()
                         return true
                     end
