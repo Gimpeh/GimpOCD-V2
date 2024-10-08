@@ -5,6 +5,8 @@ local PagedWindow = require("lib.PagedWindow")
 
 local item_overseer = {}
 item_overseer.players = {}
+item_overseer.onClick = nil
+item_overseer.onClickRight = nil
 
 local itemBox_main
 local itemBox_tracked
@@ -130,7 +132,7 @@ function item_overseer.init(player)
         item_overseer.players[player].elements.button_tracked = display_monitored
         item_overseer.players[player].elements.button_crafting = display_crafting
 
-        
+        players[player].currentModules.item_overseer = true
     end)
     if not suc then print(err) end
 end
@@ -216,6 +218,60 @@ levelMaintainer = function(x, y, argsTable, player)
         return new_lm
     end)
     if not suc then print(err) end
+end
+
+-----------------------------------------------------
+--- Command and Control
+
+item_overseer.onClick = function(eventName, address, player, x, y, button)
+    local suc, err = pcall(function()
+        if eventName == "hud_click" and button == 0 then
+            print("item_overseer: Left-click detected for player " .. tostring(player))
+            component.glasses = require("displays.glasses_display").getGlassesProxy(player)
+            if item_overseer.players[player].elements.background.contains(x, y) then
+                for key, element in pairs(item_overseer.players[player].elements) do
+                    if element.box.contains(x, y) then
+                        element.onClick(x, y)
+                        return
+                    end
+                end
+                for index, element in ipairs(item_overseer.players[player].display.currentlyDisplayed) do
+                    if element.box.contains(x, y) then
+                        element.onClick(x, y)
+                        return
+                    end
+                end
+            else
+                return false
+            end
+        end
+    end)
+    return true
+end
+
+item_overseer.onClickRight = function(eventName, address, player, x, y, button)
+    local suc, err = pcall(function()
+        if eventName == "hud_click" and button == 1 then
+            print("item_overseer: Right-click detected for player " .. tostring(player))
+            component.glasses = require("displays.glasses_display").getGlassesProxy(player)
+            if item_overseer.players[player].elements.background.contains(x, y) then
+                for key, element in pairs(item_overseer.players[player].elements) do
+                    if element.box.contains(x, y) then
+                        element.onClickRight()
+                        return true
+                    end
+                end
+                for index, element in ipairs(item_overseer.players[player].display.currentlyDisplayed) do
+                    if element.box.contains(x, y) then
+                        element.onClickRight()
+                        return true
+                    end
+                end
+            else
+                return false
+            end
+        end
+    end)
 end
 
 return item_overseer
