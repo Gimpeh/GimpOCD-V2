@@ -220,6 +220,11 @@ end
 function hudSetup.remove(player)
     print("hudSetup - Line 176: remove function called for player")
     local suc, err = pcall(function()
+        if players[player].hudSetup.elements.window and players[player].hudSetup.elements.window.remove then
+            players[player].hudSetup.elements.window.remove()
+            players[player].hudSetup.elements.window = nil
+            print("hudSetup - Line 179: Removed selection window for player")
+        end
         for index, element in ipairs(players[player].hudSetup.elements) do
             element.remove()
             players[player].hudSetup.elements[index] = nil
