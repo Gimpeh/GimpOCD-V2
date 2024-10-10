@@ -7,13 +7,13 @@ local shell = require("shell")
 
 local args, options = shell.parse(...)
 
-local verbosity = false
+--[[local verbosity = false
 if options and options.verbose then
     verbosity = true
 end
 if not verbosity then
     print = function() end
-end
+end]]
 
 if args and args[1] and type(args[1]) == "number" then
     time(args[1])
