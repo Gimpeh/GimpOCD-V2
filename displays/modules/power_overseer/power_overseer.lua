@@ -176,7 +176,7 @@ power_overseer.init = function(player)
         print("power_overseer [Line 144] - Created pop-up for player: " .. player)
 
         if players[player].popUp then
-            players[player].popUp.remove()
+            players[player].popUp.onClick(1, 2, player)
             print("power_overseer [Line 148] - Removed existing pop-up for player: " .. player)
         end
         players[player].popUp = popUp
@@ -212,7 +212,7 @@ power_overseer.init = function(player)
                 print("power_overseer [Line 170] - Middle click detected for player: " .. player)
                 if power_overseer.players[player].widget then
                     if players[player].popUp then
-                        players[player].popUp.remove()
+                        players[player].popUp.onClick(1, 2, player)
                     end
                     players[player].modules[players[player].current_hudPage].power_overseer = {}
                     players[player].modules[players[player].current_hudPage].power_overseer.elements = {} 
