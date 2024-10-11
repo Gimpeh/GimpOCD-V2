@@ -65,7 +65,9 @@ end
 
 local function onModemMessage(_, _, _, port, _, message1)
     if port == 202 then
-        players[player].modules[players[player].current_hudPage].power_overseer.onModemMessage(message1)
+        for player in pairs(players) do
+            players[player].modules[players[player].current_hudPage].power_overseer.onModemMessage(message1)
+        end
     end
 end
 
