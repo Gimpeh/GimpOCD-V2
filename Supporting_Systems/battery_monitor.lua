@@ -180,9 +180,15 @@ end
 
 
 local function main()
-    local powerMetrics = getMetrics()
-    setGenerator(powerMetrics.stored)
-    modem.broadcast(powerMetricsPort, s.serialize(powerMetrics))
+    local suc, powerMetrics = pcall(getMetrics)
+    if not suc then
+        print(powerMetrics)
+    else
+        local suc1, err1 = pcall(setGenerator, powerMetrics.stored)
+        if not suc1 then print("error in setGenerator: " .. err1) end
+        local suc2, err2 = pcall(modem.broadcast, powerMetricsPort, s.serialize(powerMetrics))
+        if not suc2 then print("error in modem.broadcast: " .. err2) end
+    end
 end
 
 --------------------------------------------------------------------------
@@ -199,7 +205,7 @@ event.listen("component_removed", function()
 end)
 
 while true do
-    local success, error = pcall(main)
-    if not success then print(error) end
+    local success, err = pcall(main)
+    if not success then print(err) end
     os.sleep(2)
 end
