@@ -109,8 +109,10 @@ function contextMenu.remove(player)
         players[player].contextMenu.elements = nil
         return true
     end)
-    error("attempt to get the stack", 2)
-    if not suc then print("contextMenu - Line 96: " .. err) end
+    if not suc then 
+        print("contextMenu - Line 96: " .. err) 
+        error("context 114 - attempt to get stack", 2)
+    end
 end
 
 return contextMenu
