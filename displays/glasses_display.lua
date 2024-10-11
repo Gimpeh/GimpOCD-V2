@@ -1,5 +1,5 @@
 local event = require("event")
-local modules = require("displays.modules.modules")
+modules = require("displays.modules.modules")
 local hudSetup = require("displays.glasses_elements.hudSetup")
 local widgetsAreUs = require("lib.widgetsAreUs")
 local c = require("lib.gimp_colors")
@@ -137,13 +137,13 @@ init_phase2 = function(player)
                         players[player].glasses_display.elements[1].box.setColor(table.unpack(c.pagesButton_active))
                         for moduleName, module in pairs(players[player].modules[index]) do
                             print("glasses_display - Line 121: Setting module visible for player: " .. player)
-                            module.setVisible(true)
+                            module.setVisible(true, player)
                         end
                     elseif index ~= players[player].current_hudPage then
                         players[player].glasses_display.elements[index].box.setColor(table.unpack(c.pagesButton_inactive))
                         for moduleName, module in pairs(players[player].modules[index]) do
                             print("glasses_display - Line 126: Setting module invisible for player: " .. player)
-                            module.setVisible(false)
+                            module.setVisible(false, player)
                         end
                     end
                 end
@@ -158,13 +158,13 @@ init_phase2 = function(player)
                         players[player].glasses_display.elements[2].box.setColor(table.unpack(c.pagesButton_active))
                         for moduleName, module in pairs(players[player].modules[index]) do
                             print("glasses_display - Line 138: Setting module visible for player: " .. player)
-                            module.setVisible(true)
+                            module.setVisible(true, player)
                         end
                     elseif index ~= players[player].current_hudPage then
                         players[player].glasses_display.elements[index].box.setColor(table.unpack(c.pagesButton_inactive))
                         for moduleName, module in pairs(players[player].modules[index]) do
                             print("glasses_display - Line 143: Setting module invisible for player: " .. player)
-                            module.setVisible(false)
+                            module.setVisible(false, player)
                         end
                     end
                 end
@@ -179,13 +179,13 @@ init_phase2 = function(player)
                         players[player].glasses_display.elements[3].box.setColor(table.unpack(c.pagesButton_active))
                         for moduleName, module in pairs(players[player].modules[index]) do
                             print("glasses_display - Line 155: Setting module visible for player: " .. player)
-                            module.setVisible(true)
+                            module.setVisible(true, player)
                         end
                     elseif index ~= players[player].current_hudPage then
                         players[player].glasses_display.elements[index].box.setColor(table.unpack(c.pagesButton_inactive))
                         for moduleName, module in pairs(players[player].modules[index]) do
                             print("glasses_display - Line 160: Setting module invisible for player: " .. player)
-                            module.setVisible(false)
+                            module.setVisible(false, player)
                         end
                     end
                 end

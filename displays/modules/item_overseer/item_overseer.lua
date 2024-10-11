@@ -38,7 +38,7 @@ function item_overseer.init_display_storage(player)
         end
         local items = component.me_interface.getItemsInNetwork()
         print("item_overseer: Creating new PagedWindow for player " .. tostring(player))
-        item_overseer.players[player].display = PagedWindow.new(items, 80, 35, {x1=window.x, y1=window.y+44,x2=window.x+window.width, y2=window.y+window.height-22}, 3, itemBox_main, {player})
+        item_overseer.players[player].display = PagedWindow.new(items, 80, 35, {x1=window.x, y1=window.y+64,x2=window.x+window.width, y2=window.y+window.height-22}, 3, itemBox_main, {player})
         print("item_overseer: Displaying items for player " .. tostring(player))
         item_overseer.players[player].display:displayItems()
     end)
@@ -60,7 +60,7 @@ function item_overseer.init_tracked(player)
             item_overseer.players[player].display = nil
         end
         print("item_overseer: Creating new PagedWindow for tracked items for player " .. tostring(player))
-        item_overseer.players[player].display = PagedWindow.new(item_overseer.players[player].monitored_items, 80, 35, {x1=window.x, y1=window.y+44,x2=window.x+window.width, y2=window.y+window.height-22}, 3, itemBox_tracked, {player})
+        item_overseer.players[player].display = PagedWindow.new(item_overseer.players[player].monitored_items, 80, 35, {x1=window.x, y1=window.y+64,x2=window.x+window.width, y2=window.y+window.height-22}, 3, itemBox_tracked, {player})
         print("item_overseer: Displaying tracked items for player " .. tostring(player))
         item_overseer.players[player].display:displayItems()
     end)
@@ -82,7 +82,7 @@ function item_overseer.init_crafting(player)
             item_overseer.players[player].display = nil
         end
         print("item_overseer: Creating new PagedWindow for crafting items for player " .. tostring(player))
-        item_overseer.players[player].display = PagedWindow.new(item_overseer.players[player].crafting_items, 150, 30, {x1=window.x, y1=window.y+44,x2=window.x+window.width, y2=window.y+window.height-22}, 3, levelMaintainer, {player})
+        item_overseer.players[player].display = PagedWindow.new(item_overseer.players[player].crafting_items, 150, 30, {x1=window.x, y1=window.y+64,x2=window.x+window.width, y2=window.y+window.height-22}, 3, levelMaintainer, {player})
         print("item_overseer: Displaying crafting items for player " .. tostring(player))
         item_overseer.players[player].display:displayItems()
     end)
@@ -122,9 +122,17 @@ function item_overseer.init(player)
         item_overseer.players[player].elements.background = background
         players[player].modules[cur_page].item_overseer.elements.backgroundBox = background
 
+        print("item_overseer: Creating title element for player " .. tostring(player))
+        local title = widgetsAreUs.attachOnClickRight(widgetsAreUs.windowTitle(window.x, window.y, window.width, "Item Overseer"), function(eventName, address, player, x, y, button)
+            local context = contextMenu.init(x, y, player, {
+                [1] = {text = "Remove Item Overseer", func = item_overseer.remove, args = {player}}
+            })
+        end)
+        item_overseer.players[player].elements.title = title
+
         local search_bar
         print("item_overseer: Creating search bar element for player " .. tostring(player))
-        search_bar = widgetsAreUs.attachOnClickRight(widgetsAreUs.attachOnClick(widgetsAreUs.searchBar(window.x, window.y, window.width), function(eventName, address, player, x, y, button)
+        search_bar = widgetsAreUs.attachOnClickRight(widgetsAreUs.attachOnClick(widgetsAreUs.searchBar(window.x, window.y+20, window.width), function(eventName, address, player, x, y, button)
             local function string_contains(str, pattern) -- left click
                 return string.find(str, pattern) ~= nil
             end
@@ -141,7 +149,7 @@ function item_overseer.init(player)
                 end
                 item_overseer.players[player].display:clearDisplayedItems()
                 item_overseer.players[player].display = nil
-                item_overseer.players[player].display = PagedWindow.new(search_items, 80, 35, {x1=window.x, y1=window.y+44,x2=window.x+window.width, y2=window.y+window.height-22}, 3, itemBox_main, {player})
+                item_overseer.players[player].display = PagedWindow.new(search_items, 80, 35, {x1=window.x, y1=window.y+64,x2=window.x+window.width, y2=window.y+window.height-22}, 3, itemBox_main, {player})
                 item_overseer.players[player].display:displayItems()
             end
         end), function(eventName, address, player, x, y, button) -- Right-click
@@ -152,26 +160,27 @@ function item_overseer.init(player)
         item_overseer.players[player].elements.search_bar = search_bar
 
         print("item_overseer: Creating navigation buttons for player " .. tostring(player))
-        local up_button = widgetsAreUs.symbolBox(window.x + ((window.width/2)-10), window.y+22, "▲", c.navbutton, item_overseer.prev, player)
+        local up_button = widgetsAreUs.symbolBox(window.x + ((window.width/2)-10), window.y+42, "▲", c.navbutton, item_overseer.prev, player)
         local down_button = widgetsAreUs.symbolBox(window.x + ((window.width/2)-10), window.y+window.height-22, "▼", c.navbutton, item_overseer.next, player)
         item_overseer.players[player].elements.up_button = up_button
         item_overseer.players[player].elements.down_button = down_button
 
         print("item_overseer: Creating display control buttons for player " .. tostring(player))
-        local display_main = widgetsAreUs.attachOnClickRight(widgetsAreUs.symbolBox(window.x+3, window.y+22, "M", c.navbutton, item_overseer.init_display_storage, player), function(eventName, address, player, x, y, button)
+        local display_main_button = widgetsAreUs.attachOnClickRight(widgetsAreUs.symbolBox(window.x+3, window.y+42, "M", c.navbutton, item_overseer.init_display_storage, player), function(eventName, address, player, x, y, button)
             local context = contextMenu.init(x, y, player, {
                 [1] = {text = "Remove Item Overseer", func = item_overseer.remove, args = {player}}
             })
         end)
-        local display_monitored = widgetsAreUs.symbolBox(window.x+window.width-44, window.y+window.height-22, "T", c.navbutton, item_overseer.init_tracked, player)
-        local display_crafting = widgetsAreUs.symbolBox(window.x+window.width-22, window.y+window.height-22, "C", c.navbutton, item_overseer.init_crafting, player)
-        item_overseer.players[player].elements.button_main = display_main
-        item_overseer.players[player].elements.button_tracked = display_monitored
-        item_overseer.players[player].elements.button_crafting = display_crafting
+        local display_monitored_button = widgetsAreUs.symbolBox(window.x+window.width-44, window.y+window.height-22, "T", c.navbutton, item_overseer.init_tracked, player)
+        local display_crafting_button = widgetsAreUs.symbolBox(window.x+window.width-22, window.y+window.height-22, "C", c.navbutton, item_overseer.init_crafting, player)
+        item_overseer.players[player].elements.button_main = display_main_button
+        item_overseer.players[player].elements.button_tracked = display_monitored_button
+        item_overseer.players[player].elements.button_crafting = display_crafting_button
 
         players[player].currentModules.item_overseer = true
         players[player].modules[cur_page].item_overseer.onClick = item_overseer.onClick
         players[player].modules[cur_page].item_overseer.onClickRight = item_overseer.onClickRight
+        players[player].modules[cur_page].item_overseer.setVisible = item_overseer.setVisible
 
         item_overseer.load(player)
     end)
@@ -215,7 +224,7 @@ itemBox_tracked = function(x, y, itemstack, player)
                     print("item_overseer: Clearing displayed items and updating tracked items display for player " .. tostring(player))
                     item_overseer.players[player].display:clearDisplayedItems()
                     item_overseer.players[player].display = nil
-                    item_overseer.players[player].display = PagedWindow.new(item_overseer.players[player].monitored_items, 80, 35, {x1=item_overseer.players[player].window.x, y1=item_overseer.players[player].window.y+44,x2=item_overseer.players[player].window.x+item_overseer.players[player].window.width, y2=item_overseer.players[player].window.y+item_overseer.players[player].window.height-22}, 3, itemBox_tracked, {player})
+                    item_overseer.players[player].display = PagedWindow.new(item_overseer.players[player].monitored_items, 80, 35, {x1=item_overseer.players[player].window.x, y1=item_overseer.players[player].window.y+64,x2=item_overseer.players[player].window.x+item_overseer.players[player].window.width, y2=item_overseer.players[player].window.y+item_overseer.players[player].window.height-22}, 3, itemBox_tracked, {player})
                     item_overseer.players[player].display:displayItems()
                 end, args = {}},
                 [2] = {text = "Add to Crafting (C)", func = function() table.insert(item_overseer.players[player].crafting_items, {itemStack = itemstack, batch = 0, amount = 0}) end, args = {}}
@@ -243,7 +252,7 @@ levelMaintainer = function(x, y, argsTable, player)
                             print("item_overseer: Clearing displayed items and updating crafting items display for player " .. tostring(player))
                             item_overseer.players[player].display:clearDisplayedItems()
                             item_overseer.players[player].display = nil
-                            item_overseer.players[player].display = PagedWindow.new(item_overseer.players[player].crafting_items, 150, 30, {x1=item_overseer.players[player].window.x, y1=item_overseer.players[player].window.y+44,x2=item_overseer.players[player].window.x+item_overseer.players[player].window.width, y2=item_overseer.players[player].window.y+item_overseer.players[player].window.height-22}, 3, levelMaintainer, {player})
+                            item_overseer.players[player].display = PagedWindow.new(item_overseer.players[player].crafting_items, 150, 30, {x1=item_overseer.players[player].window.x, y1=item_overseer.players[player].window.y+64,x2=item_overseer.players[player].window.x+item_overseer.players[player].window.width, y2=item_overseer.players[player].window.y+item_overseer.players[player].window.height-22}, 3, levelMaintainer, {player})
                             item_overseer.players[player].display:displayItems()
                         end
                     end
@@ -252,7 +261,7 @@ levelMaintainer = function(x, y, argsTable, player)
             return true
         end
 
-        local lm = widgetsAreUs.levelMaintainer(x, y, argsTable)
+        local lm = widgetsAreUs.levelMaintainer(x, y, argsTable, player)
         print("item_overseer: Attaching context menu to level maintainer for player " .. tostring(player))
         local new_lm = widgetsAreUs.attachOnClickRight(lm, levelMaintainer_context)
         return new_lm
@@ -301,6 +310,7 @@ item_overseer.onClick = function(eventName, address, player, x, y, button)
             if item_overseer.players[player].elements.background.contains(x, y) then
                 print("item_overseer: Click detected within background for player " .. tostring(player))
                 for key, element in pairs(item_overseer.players[player].elements) do
+                    print("item_overseer: Checking element " .. tostring(key))
                     if key == "background" then
                         print("skipping background")
                     elseif element.box.contains(x, y) then
@@ -387,6 +397,10 @@ function item_overseer.remove(player)
         item_overseer.players[player].display:clearDisplayedItems()
         item_overseer.players[player].display = nil
     end
+    players[player].currentModules.item_overseer = nil
+    players[player].modules[players[player].current_hudPage].item_overseer = nil
+    item_overseer.players[player] = nil
+    players[player].availableModules.item_overseer = require("displays.modules.item_overseer.item_overseer").init
 end
 
 return item_overseer

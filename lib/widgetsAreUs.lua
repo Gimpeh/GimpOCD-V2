@@ -103,11 +103,12 @@ function widgetsAreUs.handleTextInput(textLabel, player)
     print("widgetsAreUs - Line 92: Handling text input.")
     textLabel.setText("")
     while true do
-        if not timer then 
-            timer = event.timer(30, function() break_flag = true timer = nil end)
+        if not timer then
+            timer = event.timer(timing.thirty, function() break_flag = true timer = nil end)
         end
         if break_flag then break end
-        local _, _, player_name, character = event.pull(7, "hud_keyboard")
+        local _, _, player_name, character = event.pull(timing.seven, "hud_keyboard")
+        print("widgetsAreUs - Line 96: Keyboard event received.", tostring(player_name), tostring(character))
         if player == player_name then
             if character == 13 then  -- Enter key
                 print("widgetsAreUs - Line 97: Enter key pressed, breaking loop.")
@@ -254,7 +255,7 @@ end
 -------------------------------------------
 --- Specific
 
-function widgetsAreUs.levelMaintainer(x, y, argsTable)
+function widgetsAreUs.levelMaintainer(x, y, argsTable, player)
     print("widgetsAreUs - Line 208: Creating level maintainer.")
     local itemStack = argsTable.itemStack
     local box = widgetsAreUs.titleBox(x, y, 150, 30, c.object, 0.8, itemStack.label)
@@ -263,7 +264,7 @@ function widgetsAreUs.levelMaintainer(x, y, argsTable)
     local batch = widgetsAreUs.text(x + 5, y + 20, tostring(argsTable.batch), 0.9)
     batch.onClick = function()
         print("widgetsAreUs - Line 214: Batch text clicked.")
-        batch.setText(tostring(widgetsAreUs.handleTextInput(batch)))
+        batch.setText(tostring(widgetsAreUs.handleTextInput(batch, player)))
         local args = {batch = widgetsAreUs.trim(batch.getText())}
         return args
     end
@@ -272,12 +273,12 @@ function widgetsAreUs.levelMaintainer(x, y, argsTable)
     local amount = widgetsAreUs.text(x + 70, y + 20, tostring(argsTable.amount), 0.9)
     amount.onClick = function()
         print("widgetsAreUs - Line 221: Amount text clicked.")
-        amount.setText(tostring(widgetsAreUs.handleTextInput(amount)))
+        amount.setText(tostring(widgetsAreUs.handleTextInput(amount, player)))
         local args = {amount = widgetsAreUs.trim(amount.getText())}
         return args
     end
 
-    return widgetsAreUs.attachCoreFunctions({box = box.box, boxText = box.text, batch = batch, amount = amount, itemStack = itemStack, batchText = batchText, amountText = amountText, onClick = function(x1, y1)
+    return widgetsAreUs.attachCoreFunctions({box = box.box, boxText = box.text, batch = batch, amount = amount, itemStack = itemStack, batchText = batchText, amountText = amountText, onClick = function(_, _, _, x1, y1, _)
         print("widgetsAreUs - Line 228: Level maintainer clicked.")
         if batchText.box.contains(x1, y1) then
             batch.onClick()
@@ -329,6 +330,13 @@ function widgetsAreUs.searchBar(x, y, length)
         text.setText(newText)
     end
     })
+end
+
+function widgetsAreUs.windowTitle(x, y, width, text)
+    local titleBox = widgetsAreUs.createBox(x, y, width, 20, c.black, 0.8)
+    local title = widgetsAreUs.text(x+10, y+5, text, 1, c.white)
+
+    return widgetsAreUs.attachCoreFunctions({box = titleBox, text = title})
 end
 
 return widgetsAreUs
