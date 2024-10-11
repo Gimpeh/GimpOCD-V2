@@ -4,7 +4,7 @@
 --------------------------------------------------------------------------
 -- The config if you will....
 -- Set the name of the group of machines or it will error and the computer that actually runs the glasses stuff will have issues... probably.... 
-local groupName = "FORGOTTEN"
+local groupName = 
 --group names are as follows;
 --
 --------------------------------------------------------------------------
