@@ -316,10 +316,12 @@ item_overseer.onClick = function(eventName, address, player, x, y, button)
                         return
                     end
                 end
-                for index, element in ipairs(item_overseer.players[player].display.currentlyDisplayed) do
-                    if element.box.contains(x, y) then
-                        element.onClick(eventName, address, player, x, y, button)
-                        return
+                if item_overseer.players[player].display then
+                    for index, element in ipairs(item_overseer.players[player].display.currentlyDisplayed) do
+                        if element.box.contains(x, y) then
+                            element.onClick(eventName, address, player, x, y, button)
+                            return
+                        end
                     end
                 end
             else

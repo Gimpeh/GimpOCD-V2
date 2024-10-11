@@ -125,27 +125,31 @@ local function widget(x, y, width, height, player)
             print("power_overseer [Line 114] - Updating widget components with new data")
             local euin = unserializedTable.powerIn
             local out = unserializedTable.powerOut
-            euInText.setText(widgetsAreUs.shorthandNumber(euin))
-            euOutText.setText(widgetsAreUs.shorthandNumber(out))
+            elements.euInText.setText(widgetsAreUs.shorthandNumber(euin))
+            elements.euOutText.setText(widgetsAreUs.shorthandNumber(out))
             local euStored = unserializedTable.stored
             local powerMax = unserializedTable.max
-            wireless_stored_power_number.setText(widgetsAreUs.shorthandNumber(gimpHelper.cleanBatteryStorageString(unserializedTable.wireless)))
+            elements.wireless_stored_power_number.setText(tostring(widgetsAreUs.shorthandNumber(gimpHelper.cleanBatteryStorageString(unserializedTable.wireless))))
             local percent = gimpHelper.calculatePercentage(euStored, powerMax)
-            storedNumber.setText(gimpHelper.shorthandNumber(gimpHelper.cleanBatteryStorageString(euStored)))
+            elements.storedNumber.setText(gimpHelper.shorthandNumber(gimpHelper.cleanBatteryStorageString(euStored)))
             local fillWidth = math.ceil(74 * (percent / 100))
-            fillBarForeground.setSize(20, fillWidth)
-            percentPower.setText(string.format("%.2f%%", tonumber(percent)))
+            elements.fillBarForeground.setSize(20, fillWidth)
+            elements.percentPower.setText(string.format("%.2f%%", tonumber(percent)))
             print("power_overseer [Line 125] - Widget components updated")
         end,
         remove = function()
             for k, v in pairs(elements) do
-                v.remove()
-                elements[k] = nil
+                if type(v) ~= "function" then
+                    v.remove()
+                    elements[k] = nil
+                end
             end
         end,
         setVisible = function(visible)
             for k, v in pairs(elements) do
-                v.setVisible(visible)
+                if type(v) ~= "function" then
+                    v.setVisible(visible)
+                end
             end
         end
     })
