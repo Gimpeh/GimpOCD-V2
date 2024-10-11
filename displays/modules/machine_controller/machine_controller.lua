@@ -31,7 +31,7 @@ local function init_allFocus(player)
 end
 
 function machine_controller.init(player)
-    component.modem.broadcast(301, "")
+    component.modem.broadcast(301, player, " ", "init", " ")
 
     component.glasses = require("displays.glasses_display").getGlassesProxy(player)
     local windowPre = players[player].hudSetup.elements.window

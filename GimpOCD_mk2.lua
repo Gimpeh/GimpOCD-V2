@@ -31,7 +31,9 @@ end
 print("removing all widgets")
 component.glasses.removeAll()
 
-component.modem.open(202)
+component.modem.open(202) -- Power
+component.modem.open(301) -- Output Machine Controller commands
+component.modem.open(201) -- Input Machine Controller Information
 
 players = {}
 
@@ -63,10 +65,15 @@ local function onDrag(eventName, address, player, x, y, button)
     end)
 end
 
-local function onModemMessage(_, _, _, port, _, message1)
+local function onModemMessage(_, _, _, port, _, message1, group, typeOfMessage, message)
     if port == 202 then
-        for player in pairs(players) do
-            players[player].modules[players[player].current_hudPage].power_overseer.onModemMessage(message1)
+        for playerName, playerTable in pairs(players) do
+            players[playerName].modules[players[playerName].current_hudPage].power_overseer.onModemMessage(message1)
+        end
+    elseif port == 201 then
+        local player = message1
+        for playerName, playerTable in pairs(players) do
+            players[playerName].modules[players[playerName].current_hudPage].machine_controller.onModemMessage(_, _, _, port, _, player, group, typeOfMessage, message)
         end
     end
 end

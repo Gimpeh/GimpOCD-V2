@@ -100,7 +100,7 @@ local function widget(x, y, width, height, player)
     percentPower.setScale(2)
     print("power_overseer [Line 83]  -Created percent power label")
 
-    local elements = widgetsAreUs.attachCoreFunctions( {
+    local elements = {
         backgroundBox = backgroundBox,
         backgroundInterior = backgroundInterior,
         header = header,
@@ -115,9 +115,9 @@ local function widget(x, y, width, height, player)
         fillBarBackground = fillBarBackground,
         fillBarForeground = fillBarForeground,
         percentPower = percentPower,
-    })
+    }
 
-    return {
+    return widgetsAreUs.attachCoreFunctions({
         elements = elements,
         update = function(serializedTable)
             print("power_overseer [Line 113] - Unserializing table")
@@ -140,6 +140,7 @@ local function widget(x, y, width, height, player)
         remove = function()
             for k, v in pairs(elements) do
                 v.remove()
+                elements[k] = nil
             end
         end,
         setVisible = function(visible)
@@ -147,7 +148,7 @@ local function widget(x, y, width, height, player)
                 v.setVisible(visible)
             end
         end
-    }
+    })
 end
 
 power_overseer.init = function(player)
