@@ -2,5 +2,5 @@
 Attempt at NIDAS 2.0-like window system.
 
 ```
-wget https://github.com/Gimpeh/GimpOCD-V2/blob/main/setup.lua && setup
+wget https://raw.githubusercontent.com/Gimpeh/GimpOCD-V2/refs/heads/main/setup.lua && setup
 ```
