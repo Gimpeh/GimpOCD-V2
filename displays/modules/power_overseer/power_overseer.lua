@@ -208,9 +208,8 @@ power_overseer.init = function(player)
                     if players[player].popUp then
                         players[player].popUp.onClick(1, 2, player)
                     end
-                    players[player].modules[players[player].current_hudPage].power_overseer = {}
-                    players[player].modules[players[player].current_hudPage].power_overseer.elements = {} 
-                    players[player].modules[players[player].current_hudPage].power_overseer.elements.backgroundBox = power_overseer.players[player].widget.elements.backgroundBox
+                    players[player].modules[players[player].current_hudPage].power_overseer = {} 
+                    players[player].modules[players[player].current_hudPage].power_overseer.backgroundBox = power_overseer.players[player].widget.elements.backgroundBox
                     players[player].modules[players[player].current_hudPage].power_overseer.onClick = power_overseer.onClick
                     players[player].modules[players[player].current_hudPage].power_overseer.onClickRight = power_overseer.onClickRight
                     players[player].modules[players[player].current_hudPage].power_overseer.setVisible = power_overseer.setVisible

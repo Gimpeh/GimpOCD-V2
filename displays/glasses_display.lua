@@ -55,9 +55,6 @@ local function registerUsers(eventName, address, player, max_x, max_y)
         players[player].resolution = {x=max_x, y=max_y}
         print("glasses_display - Line 55: Setting current HUD page to 1 for player: " .. player)
         players[player].current_hudPage = 1
-        if not players[player].currentModules then
-            players[player].currentModules = {}
-        end
         if not players[player].availableModules then
             players[player].availableModules = {}
             for k, v in pairs(modules) do
@@ -239,7 +236,7 @@ glasses_display.onClick = function(eventName, address, player, x, y, button)
                 hudSetup.onClick(eventName, address, player, x, y, button)
             else
                 for moduleName, module in pairs(players[player].modules[players[player].current_hudPage]) do
-                    if module and module.elements and module.elements.backgroundBox and module.elements.backgroundBox.contains(x, y) then
+                    if module and module.backgroundBox and module.backgroundBox.contains(x, y) then
                         module.onClick(eventName, address, player, x, y, button)
                     end
                 end
@@ -260,7 +257,7 @@ glasses_display.onClickRight = function(eventName, address, player, x, y, button
                 hudSetup.onClickRight(eventName, address, player, x, y, button)
             else
                 for moduleName, module in pairs(players[player].modules[players[player].current_hudPage]) do
-                    if module and module.elements and module.elements.backgroundBox and module.elements.backgroundBox.contains(x, y) then
+                    if module and module.backgroundBox and module.backgroundBox.contains(x, y) then
                         module.onClickRight(eventName, address, player, x, y, button)
                     end
                 end
@@ -289,15 +286,13 @@ glasses_display.onDrag = function(eventName, address, player, x, y, button)
 end
 
 glasses_display.update = function(player)
-    print("glasses_display - Line 252: update called for player: " .. player)
+    print("glasses_display - Line 252: update called for player: " .. tostring(player))
     local suc, err = pcall(function()
-        for index, page in ipairs(players[player].modules) do
-            if index == players[player].current_hudPage then
-                for moduleName, module in pairs(players[player].modules[index]) do
-                    if module and module.update then
-                        print("glasses_display - Line 256: Updating module for player: " .. player)
-                        module.update()
-                    end
+        for playerName, playerTable in ipairs(players) do
+            for moduleName, module in pairs(players[player].modules[players[player].current_hudPage]) do
+                if module and module.update then
+                    print("glasses_display - Line 256: Updating module: " .. tostring(module) .. " for player: " .. tostring(player))
+                    module.update()
                 end
             end
         end

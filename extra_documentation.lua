@@ -1,41 +1,32 @@
 --[[
 players[player] = {
-    resolution = {
+    resolution = {                                              <-- resolution of the player's screen (in glasses pixels)
         x = max_x,
         y = max_y
-        },
-    current_hudPage = 1,
-    currentModules = {
-        [moduleName]
     },
+    current_hudPage = 1,
     availableModules = require("displays.modules.modules"),
-    contextMenu = {  <-- ALWAYS CHECK THIS FIRST FOR onClicks (if it exists, we want to deal with it)
+    contextMenu = {
         elements = {
-            backgroundBox = the background box,
-            <array of all the other elements>
+            backgroundBox = the background box,                 <-- idk why these are on the global table.. but not reworking cuz it works and its done
+            <array of all the other elements>                   <-- don't really need this I feel like.. but Im not reworking it as its called specifically (specially)
         }
-        funcTable = {
-            [arrayOfArgs] = {
-                text = "Displayed Text",
-                func = function,
-                args = {arrayOfArgs}
+        funcTable = {                                           
+            [arrayOfArgs] = {                                   <-- an array representing 1 option each
+                text = "Displayed Text",                        <-- text to display for context menu option
+                func = function,                                <-- function to call with args stored below
+                args = {arrayOfArgs}                            <-- array of args in the order they should be passed
             }
     },
-    popUp = background box for pop-up,
-                    box = {
-                        typical box stuff.. contains().. etc
-                        onClick = function to remove the pop-up
-                    }
-    },
-    hudSetup = { <-- seperate tables for each player, to easily micromanage each player's VR setup
-        xThresholds = {}, <-- for the grid
-        yThresholds = {}, <-- for the grid
-        elements = {
-            window = selection window, <-- check first, seperate for micromanagement
-            surface = just a thing for simplicity (to check if it exists before calling its onClick), <-- check second, seperate for micromanagement
+    popUp = {
+        contains = function,                                    <-- note the lack of a backgroundBox, this is literally just a box with an onClick function
+        <all other standard box stuff>,                         <-- remove, setVisible, etc.
 
-            <the rest of the elements for the hud> (as an array, so we can micromanage order of box.contains checks and smartly choose what to do with onClick)
-        
+        onClick = function,                                     <-- function to remove the pop-up
+    },
+    hudSetup = {
+        elements = {                                            <-- If this table is not nil (nil not empty) hudSetup click stuff gets called ahead of module click stuff (so no modules get clicks)
+            window = selection window,                          <-- Used by modules when they initialize from scratch to determine boundaries        
         }    
     }
     glasses_display = {
@@ -49,12 +40,20 @@ players[player] = {
     modules = {
         [pageNum] = {
             [moduleName] = {
-                elements = {
-                    backgroundBox = the background box,
-                    <array of all elements in the PagedWindow Display> <-- so elements[1] not elements.array[1]
-                },
-                onClick = function,
-                onClickRight = function
+                backgroundBox = box containing all widgets,     <-- Used to determine where to send clicks in lib.glasses_display.lua
+
+                -- All of these are triggered in displays.glasses_display.lua
+                onClick = function,                             <-- obvious or blank (not nil) functions (context menus provide basic documentation, plain left click doesn't)
+                onClickRight = function,                        <-- CONTEXT MENUS!!!
+                update = function,                              <-- Periodically called, set appropriate counters to not update more than necessary (or blank if not needed)
+                setVisible = function,                          <-- core critical
+                remove = function,                              <-- core critical
+                
+                --optional
+                onModemMessage = function,                      <-- hard coded based on ports, in GimpOCD-mk2.lua
+                
+                --not used at all right now
+                onDrag = function
             }
         }
     }

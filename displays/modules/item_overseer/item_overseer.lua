@@ -177,7 +177,6 @@ function item_overseer.init(player)
         item_overseer.players[player].elements.button_tracked = display_monitored_button
         item_overseer.players[player].elements.button_crafting = display_crafting_button
 
-        players[player].currentModules.item_overseer = true
         players[player].modules[cur_page].item_overseer.onClick = item_overseer.onClick
         players[player].modules[cur_page].item_overseer.onClickRight = item_overseer.onClickRight
         players[player].modules[cur_page].item_overseer.setVisible = item_overseer.setVisible
@@ -397,7 +396,6 @@ function item_overseer.remove(player)
         item_overseer.players[player].display:clearDisplayedItems()
         item_overseer.players[player].display = nil
     end
-    players[player].currentModules.item_overseer = nil
     players[player].modules[players[player].current_hudPage].item_overseer = nil
     item_overseer.players[player] = nil
     players[player].availableModules.item_overseer = require("displays.modules.item_overseer.item_overseer").init
