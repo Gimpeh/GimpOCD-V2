@@ -22,85 +22,85 @@ local function widget(x, y, width, height, player)
     local backgroundBox = widgetsAreUs.createBox(x, y, 203, 183, {0, 0, 0}, 0.8)
     print("power_overseer [Line 20]  -Created background box")
 
-    local backgroundInterior = widgetsAreUs.attachCoreFunctions(component.glasses.addRect())
+    local backgroundInterior = component.glasses.addRect()
     backgroundInterior.setPosition(x + 5, y + 5)
     backgroundInterior.setSize(173, 193)
     backgroundInterior.setColor(13, 255, 255)
     backgroundInterior.setAlpha(0.7)
     print("power_overseer [Line 25]  -Created background interior")
 
-    local header = widgetsAreUs.attachCoreFunctions(component.glasses.addTextLabel())
+    local header = component.glasses.addTextLabel()
     header.setScale(2)
     header.setText("Power Metrics")
     header.setPosition(x + 33, y + 10)
     print("power_overseer [Line 31]  -Created header label")
     
-    local euInLabel = widgetsAreUs.attachCoreFunctions(component.glasses.addTextLabel())
+    local euInLabel = component.glasses.addTextLabel()
     euInLabel.setText("EU IN :")
     euInLabel.setPosition(x + 23, y + 43)
     euInLabel.setScale(2)
     print("power_overseer [Line 36]  -Created EU IN label")
 
-    local euInText = widgetsAreUs.attachCoreFunctions(component.glasses.addTextLabel())
+    local euInText = component.glasses.addTextLabel()
     euInText.setPosition(x + 103, y + 45)
     euInText.setText(" ")
     euInText.setScale(2)
     print("power_overseer [Line 41]  -Created EU IN text label")
 
-    local euOutLabel = widgetsAreUs.attachCoreFunctions(component.glasses.addTextLabel())
+    local euOutLabel = component.glasses.addTextLabel()
     euOutLabel.setText("EU OUT:")
     euOutLabel.setPosition(x + 15, y + 68)
     euOutLabel.setScale(2)
     print("power_overseer [Line 46]  -Created EU OUT label")
 
-    local euOutText = widgetsAreUs.attachCoreFunctions(component.glasses.addTextLabel())
+    local euOutText = component.glasses.addTextLabel()
     euOutText.setScale(2)
     euOutText.setText(" ")
     euOutText.setPosition(x + 103, y + 69)
     print("power_overseer [Line 51]  -Created EU OUT text label")
 
-    local wireless_stored_power_label = widgetsAreUs.attachCoreFunctions(component.glasses.addTextLabel())
+    local wireless_stored_power_label = component.glasses.addTextLabel()
     wireless_stored_power_label.setText("Wireless:")
     wireless_stored_power_label.setPosition(x + 9, y + 100)
     wireless_stored_power_label.setScale(2)
     print("power_overseer [Line 56]  -Created wireless stored power label")
 
-    local wireless_stored_power_number = widgetsAreUs.attachCoreFunctions(component.glasses.addTextLabel())
+    local wireless_stored_power_number = component.glasses.addTextLabel()
     wireless_stored_power_number.setText(" ")
     wireless_stored_power_number.setPosition(x + 103, y + 100)
     wireless_stored_power_number.setScale(2)
     print("power_overseer [Line 61]  -Created wireless stored power number label")
 
-    local stored_label = widgetsAreUs.attachCoreFunctions(component.glasses.addTextLabel())
+    local stored_label = component.glasses.addTextLabel()
     stored_label.setText("Stored:")
     stored_label.setPosition(x + 20, y + 125)
     stored_label.setScale(2)
     print("power_overseer [Line 66]  -Created stored label")
 
-    local storedNumber = widgetsAreUs.attachCoreFunctions(component.glasses.addTextLabel())
+    local storedNumber = component.glasses.addTextLabel()
     storedNumber.setText("")
     storedNumber.setPosition(x + 103, y + 125)
     storedNumber.setScale(2)
     print("power_overseer [Line 71]  -Created stored number label")
 
-    local fillBarBackground = widgetsAreUs.attachCoreFunctions(component.glasses.addRect())
+    local fillBarBackground = component.glasses.addRect()
     fillBarBackground.setPosition(x + 108, y + 148)
     fillBarBackground.setSize(20, 80)
     print("power_overseer [Line 75]  -Created fill bar background")
 
-    local fillBarForeground = widgetsAreUs.attachCoreFunctions(component.glasses.addRect())
+    local fillBarForeground = component.glasses.addRect()
     fillBarForeground.setPosition(x + 108, y + 148)
     fillBarForeground.setSize(20, 1)
     fillBarForeground.setColor(1, 1, 0)
     print("power_overseer [Line 79]  -Created fill bar foreground")
 
-    local percentPower = widgetsAreUs.attachCoreFunctions(component.glasses.addTextLabel())
+    local percentPower = component.glasses.addTextLabel()
     percentPower.setPosition(x + 33, y + 148)
     percentPower.setText(" ")
     percentPower.setScale(2)
     print("power_overseer [Line 83]  -Created percent power label")
 
-    return widgetsAreUs.attachCoreFunctions({
+    local elements = widgetsAreUs.attachCoreFunctions( {
         backgroundBox = backgroundBox,
         backgroundInterior = backgroundInterior,
         header = header,
@@ -115,6 +115,10 @@ local function widget(x, y, width, height, player)
         fillBarBackground = fillBarBackground,
         fillBarForeground = fillBarForeground,
         percentPower = percentPower,
+    })
+
+    return {
+        elements = elements,
         update = function(serializedTable)
             print("power_overseer [Line 113] - Unserializing table")
             local unserializedTable = s.unserialize(serializedTable)
@@ -132,8 +136,18 @@ local function widget(x, y, width, height, player)
             fillBarForeground.setSize(20, fillWidth)
             percentPower.setText(string.format("%.2f%%", tonumber(percent)))
             print("power_overseer [Line 125] - Widget components updated")
+        end,
+        remove = function()
+            for k, v in pairs(elements) do
+                v.remove()
+            end
+        end,
+        setVisible = function(visible)
+            for k, v in pairs(elements) do
+                v.setVisible(visible)
+            end
         end
-    })
+    }
 end
 
 power_overseer.init = function(player)
@@ -196,7 +210,7 @@ power_overseer.init = function(player)
                     end
                     players[player].modules[players[player].current_hudPage].power_overseer = {}
                     players[player].modules[players[player].current_hudPage].power_overseer.elements = {} 
-                    players[player].modules[players[player].current_hudPage].power_overseer.elements.backgroundBox = power_overseer.players[player].widget.backgroundBox
+                    players[player].modules[players[player].current_hudPage].power_overseer.elements.backgroundBox = power_overseer.players[player].widget.elements.backgroundBox
                     players[player].modules[players[player].current_hudPage].power_overseer.onClick = power_overseer.onClick
                     players[player].modules[players[player].current_hudPage].power_overseer.onClickRight = power_overseer.onClickRight
                     players[player].modules[players[player].current_hudPage].power_overseer.setVisible = power_overseer.setVisible
