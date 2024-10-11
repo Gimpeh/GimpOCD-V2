@@ -154,7 +154,6 @@ power_overseer.init = function(player)
     print("power_overseer [Line 131] - Initializing power_overseer for player: " .. player)
     local suc, err = pcall(function()
         component.glasses = require("displays.glasses_display").getGlassesProxy(player)
-        players[player].availableModules.power_overseer = nil
         power_overseer.players[player] = {}
         print("power_overseer [Line 136] - Setting up power_overseer for player: " .. player)
 
@@ -214,7 +213,7 @@ power_overseer.init = function(player)
                     players[player].modules[players[player].current_hudPage].power_overseer.onClickRight = power_overseer.onClickRight
                     players[player].modules[players[player].current_hudPage].power_overseer.setVisible = power_overseer.setVisible
                     players[player].modules[players[player].current_hudPage].power_overseer.onModemMessage = power_overseer.onModemMessage
-                    players[player].availableModules.power_overseer = nil
+                    players[player].modules.available.power_overseer = nil
                 end
                 enableOnClick()
                 break
@@ -236,7 +235,7 @@ power_overseer.remove = function(player)
     if players[player].modules[players[player].current_hudPage].power_overseer then
         players[player].modules[players[player].current_hudPage].power_overseer = nil
         power_overseer.players[player] = nil
-        players[player].availableModules.power_overseer = power_overseer.init
+        players[player].modules.available.power_overseer = power_overseer.init
         print("power_overseer [Line 205] - Fully removed power_overseer for player: " .. player)
     end
 end

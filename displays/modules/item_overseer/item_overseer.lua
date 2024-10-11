@@ -95,7 +95,7 @@ function item_overseer.init(player)
         print("item_overseer: Getting glasses proxy for player " .. tostring(player))
         component.glasses = require("displays.glasses_display").getGlassesProxy(player)
         print("item_overseer: Setting availableModules.item_overseer to nil for player " .. tostring(player))
-        players[player].availableModules.item_overseer = nil
+        players[player].modules.available.item_overseer = nil
         local windowPre = players[player].hudSetup.elements.window
         local window = {}
         window.x = windowPre.x
@@ -398,7 +398,7 @@ function item_overseer.remove(player)
     end
     players[player].modules[players[player].current_hudPage].item_overseer = nil
     item_overseer.players[player] = nil
-    players[player].availableModules.item_overseer = require("displays.modules.item_overseer.item_overseer").init
+    players[player].modules.available.item_overseer = require("displays.modules.item_overseer.item_overseer").init
 end
 
 return item_overseer

@@ -181,10 +181,10 @@ function hudSetup.onDrag(eventName, address, player, x, y, button)
                 local function spawnArgTable(player)
                     local args = {}
                     local i = 1
-                    for k, v in pairs(players[player].availableModules) do
+                    for k, v in pairs(players[player].modules.available) do
                         local tbl = {
                             text = k,
-                            func = players[player].availableModules[k],
+                            func = players[player].modules.available[k],
                             args = {player}
                         }
                         table.insert(args, tbl)

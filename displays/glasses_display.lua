@@ -1,5 +1,5 @@
 local event = require("event")
-modules = require("displays.modules.modules")
+local modules = require("displays.modules.modules")
 local hudSetup = require("displays.glasses_elements.hudSetup")
 local widgetsAreUs = require("lib.widgetsAreUs")
 local c = require("lib.gimp_colors")
@@ -40,6 +40,7 @@ local function registerUsers(eventName, address, player, max_x, max_y)
         if not players[player].modules[3] then
             players[player].modules[3] = {}
         end
+        modules.init(player)
         if not players[player].glasses_display then
             players[player].glasses_display = {}
         end
@@ -55,12 +56,12 @@ local function registerUsers(eventName, address, player, max_x, max_y)
         players[player].resolution = {x=max_x, y=max_y}
         print("glasses_display - Line 55: Setting current HUD page to 1 for player: " .. player)
         players[player].current_hudPage = 1
-        if not players[player].availableModules then
+        --[[if not players[player].availableModules then
             players[player].availableModules = {}
             for k, v in pairs(modules) do
                 players[player].availableModules[k] = v
             end
-        end
+        end]]
         if not players[player].glasses_display.elements then
             players[player].glasses_display.elements = {}
         end
