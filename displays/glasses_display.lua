@@ -232,6 +232,8 @@ glasses_display.onClick = function(eventName, address, player, x, y, button)
                 short[3].onClick()
             elseif short.grid_button.box.contains(x, y) then
                 short.grid_button.onClick()
+            elseif players[player].popUp and players[player].popUp.contains(x, y) then
+                players[player].popUp.onClick(eventName, address, player, x, y, button)
             elseif players[player].hudSetup.elements then
                 print("glasses_display - Line 207: HUD setup onClick triggered for player: " .. player)
                 hudSetup.onClick(eventName, address, player, x, y, button)
@@ -292,8 +294,10 @@ glasses_display.update = function(player)
         for index, page in ipairs(players[player].modules) do
             if index == players[player].current_hudPage then
                 for moduleName, module in pairs(players[player].modules[index]) do
-                    print("glasses_display - Line 256: Updating module for player: " .. player)
-                    module.update()
+                    if module and module.update then
+                        print("glasses_display - Line 256: Updating module for player: " .. player)
+                        module.update()
+                    end
                 end
             end
         end

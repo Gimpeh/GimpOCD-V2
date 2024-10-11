@@ -5,6 +5,10 @@ local glasses_display = require("displays.glasses_display")
 local time = require("lib.timing")
 local shell = require("shell")
 
+
+--------------------------------------
+--- Shell Arguments
+
 local args, options = shell.parse(...)
 
 --[[local verbosity = false
@@ -21,12 +25,20 @@ else
     time(1)
 end
 
+--------------------------------------
+--- Initialization - Events
+
 print("removing all widgets")
 component.glasses.removeAll()
+
+component.modem.open(202)
 
 players = {}
 
 glasses_display.init()
+
+--------------------------------------
+--- Event Handling
 
 local function onClick(eventName, address, player, x, y, button)
     print("Handling onClick event")
@@ -51,8 +63,26 @@ local function onDrag(eventName, address, player, x, y, button)
     end)
 end
 
+local function onModemMessage(_, _, _, port, _, message1)
+    if port == 202 then
+        players[player].modules[players[player].current_hudPage].power_overseer.onModemMessage(message1)
+    end
+end
+
+function enableOnClick()
+    event.listen("hud_click", onClick)
+end
+function disableOnClick()
+    event.ignore("hud_click", onClick)
+end
+
+enableOnClick()
+
+event.listen("modem_message", onModemMessage)
 event.listen("hud_drag", onDrag)
-event.listen("hud_click", onClick)
+
+--------------------------------------
+--- ZZZZZZZZZZZZZZZZZZZ
 
 while true do
     os.sleep(5)

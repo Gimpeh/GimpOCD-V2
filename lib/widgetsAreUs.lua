@@ -10,29 +10,31 @@ local widgetsAreUs = {}
 
 function widgetsAreUs.attachCoreFunctions(obj)
     print("widgetsAreUs - Line 12: Attaching core functions.")
-    if obj.getID then
-        print("widgetsAreUs - Line 14: Object has getID, attaching remove function.")
-        obj.remove = function()
-            print("widgetsAreUs - Line 16: Removing object with getID.")
-            component.glasses.removeObject(obj.getID())
-            obj = nil
-        end
-    elseif type(obj) == "table" then
-        print("widgetsAreUs - Line 22: Object is a table, attaching recursive remove function.")
-        obj.remove = function()
-            print("widgetsAreUs - Line 24: Recursively removing table elements.")
-            for k, v in pairs(obj) do
-                if type(v) == "table" and v.remove then
-                    print("widgetsAreUs - Line 27: Removing nested table element.")
-                    v.remove()
-                    obj[k] = nil
-                elseif type(v) == "table" and v.getID then
-                    print("widgetsAreUs - Line 31: Removing nested object with getID.")
-                    component.glasses.removeObject(v.getID())
-                    obj[k] = nil
-                end
+    if not obj.remove then
+        if obj.getID then
+            print("widgetsAreUs - Line 14: Object has getID, attaching remove function.")
+            obj.remove = function()
+                print("widgetsAreUs - Line 16: Removing object with getID.")
+                component.glasses.removeObject(obj.getID())
+                obj = nil
             end
-            obj = nil
+        elseif type(obj) == "table" then
+            print("widgetsAreUs - Line 22: Object is a table, attaching recursive remove function.")
+            obj.remove = function()
+                print("widgetsAreUs - Line 24: Recursively removing table elements.")
+                for k, v in pairs(obj) do
+                    if type(v) == "table" and v.remove then
+                        print("widgetsAreUs - Line 27: Removing nested table element.")
+                        v.remove()
+                        obj[k] = nil
+                    elseif type(v) == "table" and v.getID then
+                        print("widgetsAreUs - Line 31: Removing nested object with getID.")
+                        component.glasses.removeObject(v.getID())
+                        obj[k] = nil
+                    end
+                end
+                obj = nil
+            end
         end
     end
     if not obj.setVisible then
@@ -195,6 +197,48 @@ end
 
 -------------------------------------------
 --- Pop Up
+
+function widgetsAreUs.popUp(x, y, width, height, line1, line2, line3, line4, line5, line6)
+    print("widgetsAreUs - Line 166: Creating pop up.")
+    local box = widgetsAreUs.createBox(x, y, width, height, c.beige, 0.5)
+    local text1 = widgetsAreUs.text(x + 3, y + 3, line1, 1.2)
+    local text2 = nil
+    local text3 = nil
+    local text4 = nil
+    local text5 = nil
+    local text6 = nil
+    if line2 then
+        text2 = widgetsAreUs.text(x + 3, y + 18, line2, 1.2)
+    end
+    if line3 then
+        text3 = widgetsAreUs.text(x + 3, y + 33, line3, 1.2)
+    end
+    if line4 then
+        text4 = widgetsAreUs.text(x + 3, y + 48, line4, 1.2)
+    end
+    if line5 then
+        text5 = widgetsAreUs.text(x + 3, y + 63, line5, 1.2)
+    end
+    if line6 then
+        text6 = widgetsAreUs.text(x + 3, y + 78, line6, 1.2)
+    end
+    local remove = function(player)
+        component.glasses = require("displays.glasses_display").getGlassesProxy(player)
+        print("widgetsAreUs - Line 166: Removing pop up.")
+        component.glasses.removeObject(box.getID())
+        component.glasses.removeObject(text1.getID())
+        if text2 then component.glasses.removeObject(text2.getID()) end
+        if text3 then component.glasses.removeObject(text3.getID()) end
+        if text4 then component.glasses.removeObject(text4.getID()) end
+        if text5 then component.glasses.removeObject(text5.getID()) end
+        if text6 then component.glasses.removeObject(text6.getID()) end
+        players[player].popUp = nil
+    end
+    box.onClick = function(eventName, address, player, x1, y1, button)
+        remove(player)
+    end
+    return widgetsAreUs.attachCoreFunctions(box)
+end
 
 function widgetsAreUs.alertMessage(color, message, timer)
     print("widgetsAreUs - Line 167: Creating alert message.")

@@ -21,6 +21,12 @@ players[player] = {
                 args = {arrayOfArgs}
             }
     },
+    popUp = background box for pop-up,
+                    box = {
+                        typical box stuff.. contains().. etc
+                        onClick = function to remove the pop-up
+                    }
+    },
     hudSetup = { <-- seperate tables for each player, to easily micromanage each player's VR setup
         xThresholds = {}, <-- for the grid
         yThresholds = {}, <-- for the grid
@@ -43,7 +49,10 @@ players[player] = {
     modules = {
         [pageNum] = {
             [moduleName] = {
-                backgroundBox = the background box,
+                elements = {
+                    backgroundBox = the background box,
+                    <array of all elements in the PagedWindow Display> <-- so elements[1] not elements.array[1]
+                },
                 onClick = function,
                 onClickRight = function
             }
