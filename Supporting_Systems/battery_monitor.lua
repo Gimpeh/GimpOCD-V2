@@ -102,7 +102,7 @@ local function init()
     controllers.lsc = {}
     controllers.substation = {}
     controllers.batteryBuffer = {}
-  sortProxies(proxies())
+    sortProxies(proxies())
 end
 
 local function getMetrics()

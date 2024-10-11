@@ -68,7 +68,9 @@ end
 local function onModemMessage(_, _, _, port, _, message1, group, typeOfMessage, message)
     if port == 202 then
         for playerName, playerTable in pairs(players) do
-            players[playerName].modules[players[playerName].current_hudPage].power_overseer.onModemMessage(message1)
+            if players[playerName].modules[players[playerName].current_hudPage] and players[playerName].modules[players[playerName].current_hudPage].power_overseer then
+                players[playerName].modules[players[playerName].current_hudPage].power_overseer.onModemMessage(message1)
+            end
         end
     elseif port == 201 then
         local player = message1

@@ -120,6 +120,7 @@ local function widget(x, y, width, height, player)
     return widgetsAreUs.attachCoreFunctions({
         elements = elements,
         update = function(serializedTable)
+            print("power_overseer [Line 108] - Power Widget update - ", serializedTable, "  \n \n \n \n \n")
             print("power_overseer [Line 113] - Unserializing table")
             local unserializedTable = s.unserialize(serializedTable)
             print("power_overseer [Line 114] - Updating widget components with new data")
@@ -130,7 +131,7 @@ local function widget(x, y, width, height, player)
             local euStored = unserializedTable.stored
             local powerMax = unserializedTable.max
             elements.wireless_stored_power_number.setText(tostring(widgetsAreUs.shorthandNumber(gimpHelper.cleanBatteryStorageString(unserializedTable.wireless))))
-            local percent = gimpHelper.calculatePercentage(euStored, powerMax)
+            local percent = gimpHelper.calculatePercentage(tostring(euStored), powerMax)
             elements.storedNumber.setText(gimpHelper.shorthandNumber(gimpHelper.cleanBatteryStorageString(euStored)))
             local fillWidth = math.ceil(74 * (percent / 100))
             elements.fillBarForeground.setSize(20, fillWidth)
