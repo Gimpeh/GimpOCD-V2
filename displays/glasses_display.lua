@@ -56,12 +56,6 @@ local function registerUsers(eventName, address, player, max_x, max_y)
         players[player].resolution = {x=max_x, y=max_y}
         print("glasses_display - Line 55: Setting current HUD page to 1 for player: " .. player)
         players[player].current_hudPage = 1
-        --[[if not players[player].availableModules then
-            players[player].availableModules = {}
-            for k, v in pairs(modules) do
-                players[player].availableModules[k] = v
-            end
-        end]]
         if not players[player].glasses_display.elements then
             players[player].glasses_display.elements = {}
         end
