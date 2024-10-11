@@ -4,7 +4,7 @@
 --------------------------------------------------------------------------
 -- The config if you will....
 -- Set the name of the group of machines or it will error and the computer that actually runs the glasses stuff will have issues... probably.... 
-local groupName = 
+local groupName = "default"
 --group names are as follows;
 --
 --------------------------------------------------------------------------
@@ -12,6 +12,16 @@ local groupName =
 local component = require("component")
 local event = require("event")
 local s = require("serialization")
+local shell = require("shell")
+
+--------------------------------------------------------------------------
+--- args
+
+local args, options = shell.parse(...)
+
+if args and args[1] then
+    groupName = args[1]
+end
 
 --------------------------------------------------------------------------
 -- variables
@@ -50,6 +60,7 @@ local power_amounts = {
 }
 
 local broadcastGroup
+local broadcastInit
 --------------------------------------------------------------------------
 -- initialization functions. Which are mostly getting proxies of what were monitoring and sorting them
 	--into the appropriate tables so we can actually call them
@@ -137,6 +148,7 @@ local function init()
 			print(thing.getName())
 		end
 	end
+    broadcastInit()
 end
 
 local function addPlayer(playerName)
@@ -392,7 +404,7 @@ local function broadcastMaintenance()
 	end
 end
 
-local function broadcastInit()
+broadcastInit = function()
 	local machine_coords = {}
 
 	for k, machine in ipairs(stuffToMonitor.machines) do
