@@ -107,6 +107,7 @@ function contextMenu.remove(player)
             players[player].contextMenu.elements[i] = nil
         end
         players[player].contextMenu.elements = nil
+        players[player].contextMenu.funcTable = nil
         return true
     end)
     if not suc then 

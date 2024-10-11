@@ -159,6 +159,7 @@ end
 power_overseer.init = function(player)
     print("power_overseer [Line 131] - Initializing power_overseer for player: " .. player)
     local suc, err = pcall(function()
+        gimp_globals.mutexes.power_overseer = true
         component.glasses = require("displays.glasses_display").getGlassesProxy(player)
         power_overseer.players[player] = {}
         print("power_overseer [Line 136] - Setting up power_overseer for player: " .. player)
@@ -226,6 +227,7 @@ power_overseer.init = function(player)
             end
         end
     end)
+    gimp_globals.mutexes.power_overseer = false
     if not suc then
         print("Error in power_overseer.init: " .. err)
     end

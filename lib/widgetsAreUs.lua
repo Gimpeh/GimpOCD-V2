@@ -100,6 +100,7 @@ function widgetsAreUs.trim(s)
 end
 
 function widgetsAreUs.handleTextInput(textLabel, player)
+    disableOnClick()
     local break_flag = false
     local timer
     print("widgetsAreUs - Line 92: Handling text input.")
@@ -114,6 +115,7 @@ function widgetsAreUs.handleTextInput(textLabel, player)
         if player == player_name then
             if character == 13 then  -- Enter key
                 print("widgetsAreUs - Line 97: Enter key pressed, breaking loop.")
+                enableOnClick()
                 return widgetsAreUs.trim(textLabel.getText())
             elseif character == 8 then  -- Backspace key
                 print("widgetsAreUs - Line 100: Backspace key pressed, removing last character.")

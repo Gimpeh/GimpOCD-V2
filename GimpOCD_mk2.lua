@@ -36,6 +36,9 @@ component.modem.open(301) -- Output Machine Controller commands
 component.modem.open(201) -- Input Machine Controller Information
 
 players = {}
+gimp_globals = {}
+gimp_globals.mutexes = {}
+gimp_globals.mutexes.power_overseer = false
 
 glasses_display.init()
 
@@ -56,6 +59,7 @@ local function onClick(eventName, address, player, x, y, button)
 end
 
 local function onDrag(eventName, address, player, x, y, button)
+    if gimp_globals.mutexes.power_overseer then return end
     print("Handling onDrag event")
     local suc, err = pcall(function()
         if eventName == "hud_drag" then
@@ -66,31 +70,41 @@ local function onDrag(eventName, address, player, x, y, button)
 end
 
 local function onModemMessage(_, _, _, port, _, message1, group, typeOfMessage, message)
+    local suc, err = pcall(function()
     if port == 202 then
+        print("GimpOCD_mk2 - 71 - Power message received")
         for playerName, playerTable in pairs(players) do
             if players[playerName].modules[players[playerName].current_hudPage] and players[playerName].modules[players[playerName].current_hudPage].power_overseer then
                 players[playerName].modules[players[playerName].current_hudPage].power_overseer.onModemMessage(message1)
             end
         end
     elseif port == 201 then
+        print("GimpOCD_mk2 - 78 - Machine Controller message received")
         local player = message1
         for playerName, playerTable in pairs(players) do
             players[playerName].modules[players[playerName].current_hudPage].machine_controller.onModemMessage(_, _, _, port, _, player, group, typeOfMessage, message)
         end
     end
+    end)
+    if not suc then
+        print("GimpOCD_mk2 - 84 - Error in onModemMessage: " .. err)
+    else
+        print("GimpOCD_mk2 - 86 - onModemMessage successful")
+    end
 end
 
 function enableOnClick()
     event.listen("hud_click", onClick)
+    event.listen("hud_drag", onDrag)
+    event.listen("modem_message", onModemMessage)
 end
 function disableOnClick()
     event.ignore("hud_click", onClick)
+    event.ignore("hud_drag", onDrag)
+    event.ignore("modem_message", onModemMessage)
 end
 
-enableOnClick()
-
-event.listen("modem_message", onModemMessage)
-event.listen("hud_drag", onDrag)
+enableOnClick() 
 
 --------------------------------------
 --- ZZZZZZZZZZZZZZZZZZZ

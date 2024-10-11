@@ -197,6 +197,7 @@ function hudSetup.onDrag(eventName, address, player, x, y, button)
                     component.glasses = require("displays.glasses_display").getGlassesProxy(player)
                     if eventName == "hud_click" and button == 1 then
                         print("hudSetup - Line 157: Right-click detected, initializing context menu")
+                        players[player].hudSetup.elements.window.remove()
                         contextMenu.init(x, y, player, spawnArgTable(player))
                     end
                 end
