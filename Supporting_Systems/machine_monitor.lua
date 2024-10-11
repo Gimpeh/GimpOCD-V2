@@ -435,7 +435,11 @@ local function modemMessageHandler(_, _, _, port, _, player, group, typeOfMessag
 					turn_machine_off(s.deserialize(message))				
 				--if the message is to report on the group
 				elseif typeOfMessage == "group monitor" then
-					players[player].task = broadcastGroup
+					players[player].task = function()
+                        for k, machine in ipairs(stuffToMonitor.machines) do
+                            broadcastSingle(machine)
+                        end
+                    end
 				--if the message is to report on a single machine
 				elseif typeOfMessage == "single monitor" then
 					players[player].machineToFocus = find_machine(s.deserialize(message))
