@@ -5,7 +5,6 @@ players[player] = {
         y = max_y
     },
     current_hudPage = 1,
-    availableModules = require("displays.modules.modules"),
     contextMenu = {
         elements = {
             backgroundBox = the background box,                 <-- idk why these are on the global table.. but not reworking cuz it works and its done
@@ -38,6 +37,14 @@ players[player] = {
         }
     }
     modules = {
+        available = {
+            machine_controller = machine_controller.init,       <-- In progress
+            power_overseer = power_overseer.init,               <-- Needs rework, but is functional
+            text_editor = text_editor.init,                     <-- FUTUREEEEE
+            item_overseer = item_overseer.init,                 <-- Should be finished, additional testing required (especially the level maintaining since that's entirely untested)
+            cpu_director = cpu_controller.init,                 <-- FUTUREEEEE
+            robot_director = robot_director.init                <-- FARRR IN THE FUTURE
+        },
         [pageNum] = {
             [moduleName] = {
                 backgroundBox = box containing all widgets,     <-- Used to determine where to send clicks in lib.glasses_display.lua
@@ -45,11 +52,11 @@ players[player] = {
                 -- All of these are triggered in displays.glasses_display.lua
                 onClick = function,                             <-- obvious or blank (not nil) functions (context menus provide basic documentation, plain left click doesn't)
                 onClickRight = function,                        <-- CONTEXT MENUS!!!
-                update = function,                              <-- Periodically called, set appropriate counters to not update more than necessary (or blank if not needed)
                 setVisible = function,                          <-- core critical
                 remove = function,                              <-- core critical
                 
-                --optional
+                --optional (usually one or the other)
+                update = function,                              <-- Periodically called, set appropriate counters to not update more than necessary
                 onModemMessage = function,                      <-- hard coded based on ports, in GimpOCD-mk2.lua
                 
                 --not used at all right now
