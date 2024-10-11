@@ -100,7 +100,7 @@ local function widget(x, y, width, height, player)
     percentPower.setScale(2)
     print("power_overseer [Line 83]  -Created percent power label")
 
-    return {
+    return widgetsAreUs.attachCoreFunctions({
         backgroundBox = backgroundBox,
         remove = function()
             print("power_overseer [Line 88]  -Removing widget components")
@@ -153,7 +153,7 @@ local function widget(x, y, width, height, player)
             percentPower.setText(string.format("%.2f%%", tonumber(percent)))
             print("power_overseer [Line 125] - Widget components updated")
         end
-    }
+    })
 end
 
 power_overseer.init = function(player)
