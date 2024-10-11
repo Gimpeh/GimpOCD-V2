@@ -132,7 +132,7 @@ local function widget(x, y, width, height, player)
             local powerMax = unserializedTable.max
             elements.wireless_stored_power_number.setText(tostring(widgetsAreUs.shorthandNumber(gimpHelper.cleanBatteryStorageString(unserializedTable.wireless))))
             local percent = gimpHelper.calculatePercentage(tostring(euStored), powerMax)
-            elements.storedNumber.setText(gimpHelper.shorthandNumber(gimpHelper.cleanBatteryStorageString(euStored)))
+            elements.storedNumber.setText(widgetsAreUs.shorthandNumber(gimpHelper.cleanBatteryStorageString(euStored)))
             local fillWidth = math.ceil(74 * (percent / 100))
             elements.fillBarForeground.setSize(20, fillWidth)
             elements.percentPower.setText(string.format("%.2f%%", tonumber(percent)))
