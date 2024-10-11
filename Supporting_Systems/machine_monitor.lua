@@ -148,7 +148,6 @@ local function init()
 			print(thing.getName())
 		end
 	end
-    broadcastInit()
 end
 
 local function addPlayer(playerName)
@@ -427,6 +426,10 @@ local function modemMessageHandler(_, _, _, port, _, player, group, typeOfMessag
 	local suc, err = pcall(function()
 		--only run if the message is for machine controllers and if it is for this group
 		if port == commandsPort then
+			if typeOfMessage == "init" then
+				addPlayer(player)
+				broadcastInit()
+			end
 			if typeOfMessage == "all monitor" then
 				players[player].all = true
 				players[player].task = broadcastGroup

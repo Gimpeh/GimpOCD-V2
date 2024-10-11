@@ -12,6 +12,13 @@ if not verbosity then
 end
 
 -- Constructor function
+---@param items table_real_object
+---@param itemWidth width_object_widget
+---@param itemHeight height_object_widget
+---@param screenBounds tbl_of_coords {x1, y1, x2, y2}
+---@param padding objectPadding
+---@param renderItem widget_creation_function
+---@param array array_of_args
 function PagedWindow.new(items, itemWidth, itemHeight, screenBounds, padding, renderItem, array)
     print("PagedWindow - Line 6: Initializing new PagedWindow.")
     local self = setmetatable({}, PagedWindow)
