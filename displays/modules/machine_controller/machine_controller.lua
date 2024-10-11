@@ -1,5 +1,6 @@
 local widgetsAreUs = require("lib.widgetsAreUs")
 local event = require("event")
+local c = require("lib.gimp_colors")
 
 --------------------------------------
 --- Forward Declarations
@@ -28,7 +29,18 @@ local function init_allFocus(player)
 end
 
 function machine_overseer.init(player)
-    
+    component.glasses = require("displays.glasses_display").getGlassesProxy(player)
+    local windowPre = players[player].hudSetup.elements.window
+    local window = {}
+    window.x = windowPre.x
+    window.y = windowPre.y
+    window.width = windowPre.x2-windowPre.x
+    window.height = windowPre.y2-windowPre.y
+
+    players[player].modules[players[player].current_hudPage].machine_overseer = {}
+
+
+    local backgroundBox = widgetsAreUs.createBox(window.x, window.y, window.width, window.height, c.background, 0.5)
 end
 
 --------------------------------------

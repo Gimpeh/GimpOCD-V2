@@ -108,7 +108,6 @@ function item_overseer.init(player)
 
         local cur_page = players[player].current_hudPage
         players[player].modules[cur_page].item_overseer = {}
-        players[player].modules[cur_page].item_overseer.elements = {}
 
         print("item_overseer: Initializing elements table for player " .. tostring(player))
         item_overseer.players[player].elements = {}
@@ -120,7 +119,7 @@ function item_overseer.init(player)
         print("item_overseer: Creating background element for player " .. tostring(player))
         local background = widgetsAreUs.createBox(window.x, window.y, window.width, window.height, c.background, 0.5)
         item_overseer.players[player].elements.background = background
-        players[player].modules[cur_page].item_overseer.elements.backgroundBox = background
+        players[player].modules[cur_page].item_overseer.backgroundBox = background
 
         print("item_overseer: Creating title element for player " .. tostring(player))
         local title = widgetsAreUs.attachOnClickRight(widgetsAreUs.windowTitle(window.x, window.y, window.width, "Item Overseer"), function(eventName, address, player, x, y, button)
