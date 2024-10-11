@@ -400,4 +400,12 @@ function item_overseer.remove(player)
     players[player].modules.available.item_overseer = require("displays.modules.item_overseer.item_overseer").init
 end
 
+function item_overseer.load(player)
+
+end
+
+function item_overseer.save(player)
+
+end
+
 return item_overseer
