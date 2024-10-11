@@ -12,8 +12,8 @@ os.execute("mkdir /home/GimpOCD-V2/displays/modules/robot_director")
 os.execute("mkdir /home/GimpOCD-V2/displays/modules/text_editor")
 os.execute("mkdir /home/GimpOCD-V2/lib")
 
-os.execute("mkdir /user/bin")
-os.execute("wget https://raw.githubusercontent.com/Gimpeh/GimpOCD-V2/refs/heads/main/GimpOCD.lua /user/bin/GimpOCD")
+os.execute("mkdir /usr/bin")
+os.execute("wget https://raw.githubusercontent.com/Gimpeh/GimpOCD-V2/refs/heads/main/GimpOCD.lua /usr/bin/GimpOCD.lua")
 
 print("Downloading files...")
 os.execute("wget -f https://raw.githubusercontent.com/Gimpeh/GimpOCD-V2/refs/heads/main/GimpOCD_mk2.lua /home/GimpOCD-V2/GimpOCD_mk2.lua")
