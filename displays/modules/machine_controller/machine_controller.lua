@@ -1,4 +1,4 @@
-local widgetsAreUs = require("widgetsAreUs")
+local widgetsAreUs = require("lib.widgetsAreUs")
 local event = require("event")
 
 --------------------------------------
