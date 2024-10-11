@@ -267,7 +267,7 @@ power_overseer.setVisible = function(visible, player)
 end
 
 power_overseer.onModemMessage = function(serializedTable)
-    for _, player in pairs(players) do
+    for player, _ in pairs(players) do
         print("power_overseer [Line 226] - onModemMessage event received. processing player: ", tostring(player))
         component.glasses = require("displays.glasses_display").getGlassesProxy(player)
         power_overseer.players[player].widget.update(serializedTable, player)
