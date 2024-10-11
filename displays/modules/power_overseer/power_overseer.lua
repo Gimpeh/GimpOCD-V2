@@ -102,39 +102,19 @@ local function widget(x, y, width, height, player)
 
     return widgetsAreUs.attachCoreFunctions({
         backgroundBox = backgroundBox,
-        remove = function()
-            print("power_overseer [Line 88]  -Removing widget components")
-            backgroundBox.remove()
-            backgroundInterior.remove()
-            header.remove()
-            euInLabel.remove()
-            euInText.remove()
-            euOutLabel.remove()
-            euOutText.remove()
-            wireless_stored_power_label.remove()
-            wireless_stored_power_number.remove()
-            stored_label.remove()
-            storedNumber.remove()
-            fillBarBackground.remove()
-            fillBarForeground.remove()
-            percentPower.remove()
-
-            backgroundBox = nil
-            backgroundInterior = nil
-            header = nil
-            euInLabel = nil
-            euInText = nil
-            euOutLabel = nil
-            euOutText = nil
-            wireless_stored_power_label = nil
-            wireless_stored_power_number = nil
-            stored_label = nil
-            storedNumber = nil
-            fillBarBackground = nil
-            fillBarForeground = nil
-            percentPower = nil
-            print("power_overseer [Line 111] - Widget components removed")
-        end,
+        backgroundInterior = backgroundInterior,
+        header = header,
+        euInLabel = euInLabel,
+        euInText = euInText,
+        euOutLabel = euOutLabel,
+        euOutText = euOutText,
+        wireless_stored_power_label = wireless_stored_power_label,
+        wireless_stored_power_number = wireless_stored_power_number,
+        stored_label = stored_label,
+        storedNumber = storedNumber,
+        fillBarBackground = fillBarBackground,
+        fillBarForeground = fillBarForeground,
+        percentPower = percentPower,
         update = function(serializedTable)
             print("power_overseer [Line 113] - Unserializing table")
             local unserializedTable = s.unserialize(serializedTable)
