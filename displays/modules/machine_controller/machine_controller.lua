@@ -403,7 +403,7 @@ machine_controller.createGroupWidget = function(x, y, group, player, detached, i
 end
 
 machine_controller.createMachineWidget = function(x, y, machineGroup, player, detached, index)
-    local suc, err = pcall(function()
+    --local suc, err = pcall(function()
         print("mach_cont - 356: createMachineWidget", tostring(x), tostring(y), tostring(machineGroup), tostring(player), tostring(detached), tostring(index))
         local machine = machineGroup.address
         local text = "Detach"
@@ -516,8 +516,8 @@ machine_controller.createMachineWidget = function(x, y, machineGroup, player, de
         end
     
         return machineWidget
-    end)
-    if not suc then print("mach_cont - 454: createMachineWidget - error", tostring(err)) end
+    --end)
+    --if not suc then print("mach_cont - 454: createMachineWidget - error", tostring(err)) end
 end
 
 --------------------------------------
