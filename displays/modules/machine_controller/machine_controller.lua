@@ -42,8 +42,8 @@ local function init_allFocus(player)
         print("mach_cont - 42: init_allFocus - creating display")
         local window = machine_controller.players[player].window
         machine_controller.players[player].display = PagedWindow.new(machine_controller.groups, 107, 40, {x1 = window.x, y1 = window.y+64, x2 = window.x+window.width, y2 = window.y+window.height - 22}, 5, machine_controller.createGroupWidget, {player})
-        machine_controller.players[player].prev = function() machine_controller.players[player].display:prevPage() end
-        machine_controller.players[player].next = function() machine_controller.players[player].display:nextPage() end
+        machine_controller.players[player].elements.prev_button.onClick = function() machine_controller.players[player].display:prevPage() end
+        machine_controller.players[player].elements.next_button.onClick = function() machine_controller.players[player].display:nextPage() end
     
         print("mach_cont - 48: init_allFocus - displaying items")
         machine_controller.players[player].display:displayItems()
@@ -64,8 +64,8 @@ local function init_groupFocus(player, group)
         print("mach_cont - 61: init_groupFocus - creating display")
         local window = machine_controller.players[player].window
         machine_controller.players[player].display = PagedWindow.new(machine_controller.groups[group], 85, 34, {x1 = window.x, y1 = window.y+64, x2 = window.x+window.width, y2 = window.y+window.height - 22}, 5, machine_controller.createMachineWidget, {player})
-        machine_controller.players[player].prev = function() machine_controller.players[player].display:prevPage() end
-        machine_controller.players[player].next = function() machine_controller.players[player].display:nextPage() end
+        machine_controller.players[player].elements.prev_button.onClick = function() machine_controller.players[player].display:prevPage() end
+        machine_controller.players[player].elements.next_button.onClick = function() machine_controller.players[player].display:nextPage() end
     
         print("mach_cont - 67: init_groupFocus - displaying items")
         machine_controller.players[player].display:displayItems()
@@ -312,6 +312,11 @@ machine_controller.createGroupWidget = function(x, y, group, player, detached, i
         print("mach_cont - 269: createGroupWidget", tostring(x), tostring(y), tostring(group), tostring(player), tostring(detached), tostring(index))
         component.glasses = require("displays.glasses_display").getGlassesProxy(player)
         local text
+        if detached then
+            text = "Attach Element"
+        else
+            text = "Remove Element"
+        end
     
         print("mach_cont - 273: createGroupWidget - creating widget")
         local groupWidget = widgetsAreUs.machineGroup(x, y, group)
@@ -325,8 +330,7 @@ machine_controller.createGroupWidget = function(x, y, group, player, detached, i
             [3] = {text =  "Turn Group Off", func = function() component.modem.broadcast(301, " ", group, "group off") end, args = {}},
             [4] = {text = "Set Tag", func = function()
                 --Do something with this eventually
-            end
-                , args = {}},
+            end, args = {}},
             [5] = {text = text, func = function()
                     if detached then 
                         groupWidget.remove()
@@ -376,13 +380,7 @@ machine_controller.createGroupWidget = function(x, y, group, player, detached, i
         } end
         print("mach_cont - 338: createGroupWidget - finished function table")
     
-        groupWidget = widgetsAreUs.attachOnClickRight(groupWidget, function(eventName, address, player, x2, y2, button)
-            if detached then
-                text = "Attach Element"
-            else
-                text = "Remove Element"
-            end
-    
+        groupWidget = widgetsAreUs.attachOnClickRight(groupWidget, function(eventName, address, player, x2, y2, button) 
             local context = contextMenu.init(x2, y2, player, funcTable)
         end)
         print("mach_cont - 349: createGroupWidget - finished attaching onClickRight")

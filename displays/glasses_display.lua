@@ -315,7 +315,7 @@ end
 -------------------------------------------------------
 --- Events
 
-local function detach(widgetFunc, args, player)
+local function detach(eventName, widgetFunc, args, player)
     component.glasses = require("displays.glasses_display").getGlassesProxy(player)
 
     if not players[player].glasses_display.elements.detached then
