@@ -209,7 +209,7 @@ end
 
 glasses_display.onClick = function(eventName, address, player, x, y, button)
     print("glasses_display - Line 190: onClick called for player: " .. player)
-    local suc, err = pcall(function()
+    --local suc, err = pcall(function()
         local short = players[player].glasses_display.elements
 
         if eventName == "hud_click" and button == 0 then
@@ -246,13 +246,13 @@ glasses_display.onClick = function(eventName, address, player, x, y, button)
                 end
             end
         end
-    end)
-    if not suc then print(err) end
+    --end)
+    --if not suc then print(err) end
 end
 
 glasses_display.onClickRight = function(eventName, address, player, x, y, button)
     print("glasses_display - Line 220: onClickRight called for player: " .. player)
-    local suc, err = pcall(function()
+    --local suc, err = pcall(function()
         if eventName == "hud_click" and button == 1 then
             if players[player].contextMenu and players[player].contextMenu.elements and players[player].contextMenu.elements.backgroundBox.contains(x, y) then
                 contextMenu.onClickRight(eventName, address, player, x, y, button)
@@ -273,8 +273,8 @@ glasses_display.onClickRight = function(eventName, address, player, x, y, button
                 end
             end
         end
-    end)
-    if not suc then print(err) end
+    --end)
+    --if not suc then print(err) end
 end
 
 glasses_display.onDrag = function(eventName, address, player, x, y, button)

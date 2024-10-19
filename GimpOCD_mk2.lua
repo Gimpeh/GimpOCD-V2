@@ -47,7 +47,7 @@ glasses_display.init()
 
 local function onClick(eventName, address, player, x, y, button)
     print("Handling onClick event")
-    local suc, err = pcall(function()
+
         if eventName == "hud_click" and button == 0 then
             print("Left-click detected")
             glasses_display.onClick(eventName, address, player, x, y, button)
@@ -55,7 +55,7 @@ local function onClick(eventName, address, player, x, y, button)
             print("Right-click detected")
             glasses_display.onClickRight(eventName, address, player, x, y, button)
         end     
-    end)
+
 end
 
 local function onDrag(eventName, address, player, x, y, button)
