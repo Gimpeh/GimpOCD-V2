@@ -6,6 +6,13 @@ contextMenu.remove = nil
 
 local choiceHeight = 10
 
+---@param x2 x
+---@param y2 y
+---@param player player
+---@param funcTable funcTable
+---@param funcTable.text contextMenuOptionText
+---@param funcTable.func onClick
+---@param funcTable.args args for onClick
 function contextMenu.init(x2, y2, player, funcTable)
     print("contextMenu - Line 10: Initializing context menu")
     --[[
@@ -65,16 +72,16 @@ function contextMenu.onClick(eventName, address, player, x, y, button)
                 local choice = math.floor((y - players[player].contextMenu.elements.backgroundBox.y) / choiceHeight) + 1
                 print("contextMenu - Line 57: Choice selected - " .. choice)
                 local func = players[player].contextMenu.funcTable[choice].func
-                if players[player].contextMenu.funcTable[choice].args and players[player].contextMenu.funcTable[choice].args[1] then
+                local args = players[player].contextMenu.funcTable[choice].args
+                contextMenu.remove(player)
+                if args and args[1] then
                     print("contextMenu - Line 60: Calling function with arguments")
-                    func(table.unpack(players[player].contextMenu.funcTable[choice].args))
+                    func(table.unpack(args))
                 else
                     print("contextMenu - Line 63: Calling function without arguments")
                     func()
                 end
             end
-            print("contextMenu - Line 66: Removing context menu")
-            contextMenu.remove(player)
             return true
         end
     end)

@@ -72,6 +72,15 @@ function gimpHelper.calculatePercentage(currentAmountStr, maxAmount)
     return percentage
 end
 
-
+function gimpHelper.correctCoordinates(xyzTable, glassesControllerXYZtable)
+    if not glassesControllerXYZtable then
+        return xyzTable
+    end
+    local correctedTable = {}
+    correctedTable.x = xyzTable.x - glassesControllerXYZtable.x
+    correctedTable.y = xyzTable.y - glassesControllerXYZtable.y
+    correctedTable.z = xyzTable.z - glassesControllerXYZtable.z
+    return correctedTable
+end
 
 return gimpHelper

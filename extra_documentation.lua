@@ -1,3 +1,6 @@
+--have a thread that constantly waits for modem messages, then push events from that thread to message recievers..
+--This would allow waiting for returns from remote_execute.. wouldn't allow anything else to happen until the return is recieved, so no wrong message return due to waiting and calling another remote_execute
+
 --[[
 players[player] = {
     resolution = {                                              <-- resolution of the player's screen (in glasses pixels)
@@ -29,16 +32,33 @@ players[player] = {
         }    
     }
     glasses_display = {
+        selectedForDrag {
+            function,
+            offset{
+                }
+        }
         elements = {
             [1], <-- Buttons for controlling hud Page
             [2],
             [3],
-            grid_button <-- Button for toggling grid
+            grid_button <-- Button for toggling grid,
+            detached = {
+                [pageNum] = {
+                    [array of detached objects] = {
+                        backgroundBox,
+                        creation function and args (in a closure!),
+                        update or onModemMessage,
+                        remove,
+                        onClickRight, -- context menu with the objects normal functions as well as remove and set hud window
+                    }
+                }
+            }
         }
     }
     modules = {
         available = {
             machine_controller = machine_controller.init,       <-- In progress
+
             power_overseer = power_overseer.init,               <-- Needs rework, but is functional
             text_editor = text_editor.init,                     <-- FUTUREEEEE
             item_overseer = item_overseer.init,                 <-- Should be finished, additional testing required (especially the level maintaining since that's entirely untested)
@@ -65,7 +85,53 @@ players[player] = {
         }
     }
 }
+
+machine_controller = {
+    onClick,
+    onClickRight,
+    setVisible,
+    remove,
+    players = {
+        [playerName] = {
+            returnedFromMethod,
+            display = {
+                array of widgets
+            }
+            elements = {
+                backgroundBox,
+                title,
+                prev_button,
+                next_button
+            },
+        }
+    },
+    groups  = {
+        [array] = {
+            name = groupName
+            tag,
+            allowed,
+            [array] = {
+                address,
+                name
+            }
+        }
+    },
+    machines = {
+        [address] = {
+            address,
+            name,
+            group,
+            tag,
+            allowed,
+            running
+        }
+    }
+}
+
+
 ]]
+
+
 
 --Add a FIXME button 
 --  and some basic mutexes on the onClicks to prevent double-click-breaking shit

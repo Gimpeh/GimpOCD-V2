@@ -17,11 +17,11 @@ local init_phase2
 -------------------------------------------------------
 --- Getters/Setters
 
----@param eventName event
----@param address address
----@param player player_name
----@param max_x screen_width
----@param max_y screen_height
+---@param eventName string
+---@param address string
+---@param player string
+---@param max_x number
+---@param max_y number
 local function registerUsers(eventName, address, player, max_x, max_y)
     print("glasses_display - Line 27: registerUsers called for player: " .. player)
     local suc, err = pcall(function()
@@ -59,6 +59,10 @@ local function registerUsers(eventName, address, player, max_x, max_y)
         if not players[player].glasses_display.elements then
             players[player].glasses_display.elements = {}
         end
+        if not players[player].glasses_display.elements.detached then
+            glasses_display.elements.detached = {}
+        end
+        players[player].glasses_display.
         print("glasses_display - Line 64: Initializing HUD setup for player: " .. player)
         hudSetup.init(player)
         print("glasses_display - Line 66: Calling init_phase2 for player: " .. player)
@@ -141,7 +145,7 @@ init_phase2 = function(player)
                 end
             end)
             if not suc then print(err) end
-        end)
+        end, player)
         players[player].glasses_display.elements[2] = widgetsAreUs.symbolBox(mid+21, 5, "2", c.pagesButton_inactive, function() 
             local suc, err = pcall(function()
                 players[player].current_hudPage = 2
@@ -162,7 +166,7 @@ init_phase2 = function(player)
                 end
             end)
             if not suc then print(err) end
-        end)
+        end, player)
         players[player].glasses_display.elements[3] = widgetsAreUs.symbolBox(mid+43, 5, "3", c.pagesButton_inactive, function() 
             local suc, err = pcall(function()
                 players[player].current_hudPage = 3
@@ -183,7 +187,7 @@ init_phase2 = function(player)
                 end
             end)
             if not suc then print(err) end
-        end)
+        end, player)
 
         -- Create the button for toggling the grid
         players[player].glasses_display.elements.grid_button = widgetsAreUs.symbolBox(mid-43, 5, "G", c.pagesButton_active, function()
@@ -196,7 +200,7 @@ init_phase2 = function(player)
                 end
             end)
             if not suc then print(err) end
-        end)
+        end, player)
     end)
     if not suc then print(err) end
 end
@@ -294,5 +298,41 @@ glasses_display.update = function(player)
     end)
     if not suc then print(err) end
 end
+
+-------------------------------------------------------
+--- Events
+
+local function detach(widgetFunc, args, player)
+    component.glasses = require("displays.glasses_display").getGlassesProxy(player)
+
+    if not players[player].glasses_display.elements.detached then
+        players[player].glasses_display.elements.detached = {}
+    end
+    if not players[player].glasses_display.elements.detached[players[player].current_hudPage] then
+        players[player].glasses_display.elements.detached[players[player].current_hudPage] = {}
+    end
+
+    local widget = widgetFunc(table.unpack(args), #players[player].glasses_display.elements.detached[players[player].current_hudPage]+1)
+
+    widget.onClick = function(eventName, address, player, x, y, button)
+        print("glasses_display - Line 272: onClick called for detached widget")
+        local suc, err = pcall(function()
+            if eventName == "hud_click" and button == 0 then
+                players[player].glasses_display.selectedForDrag.func = widget.move
+
+                local startX, startY = widget.getPosition()
+                players[player].glasses_display.selectedForDrag.offset = {x = x-startX, y = y-startY}
+            end
+        end)
+    end
+
+    widget.onDrag = function(eventName, address, player, x, y, button)
+        widget.move(x+players[player].glasses_display.selectedForDrag.offset.x, y+players[player].glasses_display.selectedForDrag.offset.Y)
+    end
+    
+    table.insert(players[player].glasses_display.elements.detached[players[player].current_hudPage], widget)
+end
+
+event.listen("detach_element", detach)
 
 return glasses_display

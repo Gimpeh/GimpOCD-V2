@@ -36,6 +36,7 @@ local metricsPort = 201 -- port for sending metrics
 
 --in
 local commandsPort = 301  -- port for recieving commands to execute.. mainly for turning stuff on and off
+local remoteReturnPort = 302 -- port for returning information from remote commands
 
 --stuff we're actually interested in monitoring (and possibly turning on and off)
 local stuffToMonitor = {}				--initialize the table
@@ -59,7 +60,7 @@ local power_amounts = {
 	["MAX"] = 2147483647
 }
 
-local broadcastGroup
+local broadcastUpdate
 local broadcastInit
 --------------------------------------------------------------------------
 -- initialization functions. Which are mostly getting proxies of what were monitoring and sorting them
@@ -142,27 +143,13 @@ local function init()
 	modem.open(commandsPort)	--open port for recieving commands (port 301)
 	sortProxies(proxyAll())		--first proxy all gregtech 'components', then sort them into appropriate tables
 	
-	for k, table in pairs(stuffToMonitor) do
-		print(k)
-		for v, thing in ipairs(table) do
-			print(thing.getName())
-		end
-	end
-end
-
-local function addPlayer(playerName)
-	players[playerName] = {}
-	players[playerName].task = broadcastGroup
-	players[playerName].machineToFocus = nil
-	players[playerName].all = true
+	broadcastInit()
 end
 
 ---------------------------------------------------------------
--- functions for getting information we need to update the overlay or HUD
+-- functions for getting information we need to update the module
 
-------machines individual -- will need to do these in such a way that we are referencing/passing coords to uniquely identify the machine
-
--- Find machine from coordinates
+-- Find machine from coordinates ***THIS IS PROBABLY WORTHLESS***
 local function find_machine(xyzTable)
 	for k, machine in ipairs(stuffToMonitor.machines) do
 		local x1, y1, z1 = machine.getCoordinates()
@@ -174,11 +161,13 @@ end
 
 -- Check individual running state
 local function is_machine_running(machine)
+	os.sleep(0)
 	return machine.isMachineActive()
 end
 
 -- Check individual on/off state
 local function can_machine_work(machine)
+	os.sleep(0)
 	return machine.isWorkAllowed()
 end
 
@@ -189,6 +178,8 @@ local function estimate_power_consumption(machine)
 			print("219 - Searching Sensor Info for Tier. sensor line:", tostring(lineNumber))
 			local startPos, endPos = string.find(lineText, search_string, 1, true)
 
+			os.sleep(0)
+
 			if startPos and endPos then
 				local tier = string.sub(lineText, endPos + 1, endPos + 4)
 				print("224 - found tier", tostring(tier))
@@ -196,6 +187,7 @@ local function estimate_power_consumption(machine)
 			else
 				print("227 - Nothing on line ", tostring(lineNumber))
 			end
+			os.sleep(0)
 		end
 		return false
 	end
@@ -205,6 +197,8 @@ local function estimate_power_consumption(machine)
 	print("237 - finding tier")
 	local tier = find_voltage_tier(sensor_info, "Tier: ")
 
+	os.sleep(0)
+
 	if tier and power_amounts[tier] then
 		return power_amounts[tier]
 	else
@@ -213,33 +207,9 @@ local function estimate_power_consumption(machine)
 	end
 end
 
--- Get machine name
-local function get_machine_name(xyzTable)
-	local machine = find_machine(xyzTable)
-	return machine.getName()
-end
-
--- Turn machine on
-local function turn_machine_on(xyzTable)
-	local machine = find_machine(xyzTable)
-	machine.setWorkAllowed(true)
-end
-
--- Turn machine off
-local function turn_machine_off(xyzTable)
-	local machine = find_machine(xyzTable)
-	machine.setWorkAllowed(false)
-end
-
--- Get machine coordinates
-local function get_machine_coordinates(machine)
-	local x, y, z = machine.getCoordinates()
-	local xyzTable = {x = x, y = y, z = z}
-	return xyzTable
-end
-
------machines groups
+-----machines groups information
 local function amountOfMachines()
+	os.sleep(0)
 	return #stuffToMonitor.machines
 end
 
@@ -247,11 +217,14 @@ end
 local function amountAllowedToWork()
 	local amount = 0	--init the return variable as a number
 
+	os.sleep(0)
+
 	-- check each machine
 	for k, machine in ipairs(stuffToMonitor.machines) do
 		if machine.isWorkAllowed() then
 			amount = amount + 1		-- if its allowed to work increase amount by 1
 		end
+		os.sleep(0)
 	end
 
 	return amount
@@ -265,6 +238,7 @@ local function powerConsumed()
 		if machine.isMachineActive() then
 			powerUse = powerUse + estimate_power_consumption(machine.getCoordinates())
 		end
+		os.sleep(0)
 	end
 
 	return powerUse
@@ -279,6 +253,7 @@ local function amountRunning()
 		if energyHatch.getEUInputAverage() > 0 then		--if its recieving power
 			machinesRunning = machinesRunning + 1	--update the return variable
 		end
+		os.sleep(0)
 	end
 
 	return machinesRunning
@@ -288,6 +263,7 @@ end
 local function turnOffAllMachines()
 	for k, machine in ipairs(stuffToMonitor.machines) do
 		machine.setWorkAllowed(false)
+		os.sleep(0)
 	end
 end
 
@@ -295,6 +271,7 @@ end
 local function turnOnAllMachines()
 	for k, machine in ipairs(stuffToMonitor.machines) do
 		machine.setWorkAllowed(true)
+		os.sleep(0)
 	end
 end
 
@@ -311,16 +288,19 @@ local function needsMaintenance()
 					return true
 				end
 			end
+			os.sleep(0)
 		end
 		return false
 	end
 
 	for _, machine in ipairs(stuffToMonitor.machines) do				--iterate through all machines
-		local sensor_info = machine.getSensorInformation()				--get the 'sensor information'
+		local sensor_info = machine.getSensorInformation()
+		os.sleep(0)--get the 'sensor information'
 		if hasProblems(sensor_info) then								--check if the machine has problems
 			local x, y, z = machine.getCoordinates()					--if it does, get the coordinates of the machine
 			table.insert(maintenanceCoordinates, {x = x, y = y, z = z})	--and store them on our temporary table
 		end
+		os.sleep(0)
 	end
 
 	if #maintenanceCoordinates > 0 then		--if there are any entries on our temporary table
@@ -337,6 +317,7 @@ end
 local function find_tank(xyzTable)
 	for k, tank in ipairs(stuffToMonitor.tanks) do
 		local x1, y1, z1 = tank.getCoordinates()
+		os.sleep(0)
 		if xyzTable.x == x1 and xyzTable.y == y1 and xyzTable.z == z1 then
 			return tank
 		end
@@ -350,10 +331,11 @@ local function amountInTank(xyzTable)
     local function extractFluidLevel(sensorInfo)
 		local fluidLevel = 0
 		for _, lineText in ipairs(sensorInfo) do
+			os.sleep(0)
 			local startPos, endPos = string.find(lineText, "Tank 0: ", 1, true)
 			if startPos and endPos then
 				local firstL = string.find(lineText, " L ", endPos + 1, true)
-
+				os.sleep(0)
 				if firstL then
 					local current_amount = string.sub(lineText, endPos + 1, firstL - 2)
 					local endL = string.find(lineText, "L", firstL + 1, true)
@@ -366,37 +348,37 @@ local function amountInTank(xyzTable)
     end
 	----------------------------------------
 	-- business end of the actual function
-
+	os.sleep(0)
 	return extractFluidLevel(find_tank(xyzTable).getSensorInformation())
 end
 
 --------------------------------------------------------------------------
--- the function for sending all the information (it calls the functions for getting the info)
--- minus maintenance problems. thats the next function
+-- Communications
 
-broadcastGroup = function()
-	local groupInfo = {
+broadcastUpdate = function()
+	local metrics = {
 		amountOfMachines = amountOfMachines(),
-		amountAllowedToWork = amountAllowedToWork(),
-		powerConsumed = powerConsumed(),
-		amountRunning = amountRunning(),
-		machines_coords = {}
+		allowed = amountAllowedToWork(),
+		group = groupName
 	}
-
-	modem.broadcast(metricsPort, "group", groupName, s.serialize(groupInfo))
-end
-
-local function broadcastSingle(machine)
-	local machineInfo = {
-		running = is_machine_running(machine),
-		canWork = can_machine_work(machine),
-		powerConsumed = estimate_power_consumption(machine)
-	}
-	modem.broadcast(metricsPort, "single", s.serialize(get_machine_coordinates(machine)), s.serialize(machineInfo))
+	os.sleep(0)
+	for k, v in ipairs(stuffToMonitor.machines) do
+		os.sleep(0)
+		local tbl = {}
+		tbl.running = is_machine_running(v)
+		tbl.allowed = can_machine_work(v)
+		os.sleep(0)
+		tbl.address = v.address
+		table.insert(metrics, tbl)
+	end
+	os.sleep(0)
+	modem.broadcast(metricsPort, "update", groupName, s.serialize(metrics))
 end
 
 local function broadcastMaintenance()
 	local maintenanceCoords = needsMaintenance()
+
+	os.sleep(0)
 
 	if maintenanceCoords then
 		modem.broadcast(metricsPort, "maintenance", groupName, s.serialize(maintenanceCoords))
@@ -404,78 +386,94 @@ local function broadcastMaintenance()
 end
 
 broadcastInit = function()
-	local machine_coords = {}
-
-	for k, machine in ipairs(stuffToMonitor.machines) do
-		local x, y, z = machine.getCoordinates()
-		local tbl = {
-			x = x,
-			y = y,
-			z = z,
-			name = machine.getName()
+	local machines = {}
+	for index, machine in ipairs(stuffToMonitor.machines) do
+		os.sleep(0)
+		local machineInfo = {
+			name = machine.getName(),
+			address = machine.address,
+			group = groupName
 		}
-		table.insert(machine_coords, tbl)
+		table.insert(machines, machineInfo)
+		os.sleep(0)
 	end
 
-	modem.broadcast(metricsPort, "init", groupName, s.serialize(machine_coords))
+	modem.broadcast(metricsPort, "init", groupName, s.serialize(machines))
+end
+
+--------------------------------------------------------------------------
+--- Remote Control Functions
+
+local function remote_execute(invokeTable)
+	local commandTable = nil
+	local ret = nil
+	local success, err = pcall(function()
+		commandTable = s.unserialize(invokeTable)
+		if commandTable.command == "getCoordinates" then
+			local x, y, z = component.invoke(commandTable.machine, "getCoordinates")
+			ret = {x = x, y = y, z = z, player = commandTable.player}
+			modem.broadcast(commandsPort, commandTable.returnAddress, groupName, s.serialize(ret))
+			return
+		end
+		if commandTable and s.unserialize(commandTable.args) ~= nil then
+			ret = component.invoke(commandTable.machine, commandTable.command, table.unpack(s.unserialize(commandTable.args)))
+		elseif commandTable.args ~= nil then
+			ret = component.invoke(commandTable.machine, commandTable.command, commandTable.args)
+		else
+			ret = component.invoke(commandTable.machine, commandTable.command)
+		end
+
+		if type(ret) == "table" then
+			ret.player = commandTable.player
+			ret = s.serialize(ret)
+			modem.broadcast(remoteReturnPort, commandTable.returnAddress, groupName, ret)
+		else
+			ret = tostring(ret)
+			local tbl = {ret}
+			tbl.player = commandTable.player
+			modem.broadcast(remoteReturnPort, commandTable.returnAddress, groupName, s.serialize(tbl))
+		end
+	end)
+	if not success then
+		print("\n \n \n \n 426- Error in remote_execute: ", err)
+		if commandTable and type(commandTable) == "table" then
+			print("429 - commandTable: ", s.serialize(commandTable))
+		end
+		print("\n \n \n \n")
+	end
 end
 
 --------------------------------------------------------------------------
 -- the wireless message handler. Used to turn machines on and off when correct message is sent
-local function modemMessageHandler(_, _, _, port, _, player, group, typeOfMessage, message)
+ local onModemMessage = function(_, _, _, port, _, player, group, typeOfMessage, message)
 	local suc, err = pcall(function()
-		--only run if the message is for machine controllers and if it is for this group
-		if port == commandsPort then
+		if group == groupName or group == "all" then
 			if typeOfMessage == "init" then
-				addPlayer(player)
 				broadcastInit()
+				return true
 			end
-			if typeOfMessage == "all monitor" then
-				players[player].all = true
-				players[player].task = broadcastGroup
-				return
+			if typeOfMessage == "remote_execute" then
+				pcall(remote_execute, message)
+				return true
 			end
-			if group == groupName then
-				--if the message is to turn a group of machines on
-				if typeOfMessage == "group on" then
-					turnOnAllMachines()
-				--if the message is to turn a group of machines off
-				elseif typeOfMessage == "group off" then
-					turnOffAllMachines()
-				--if the message is to turn a single machine on
-				elseif typeOfMessage == "single on" then
-					turn_machine_on(s.deserialize(message))
-				--if the message is to turn a single machine off
-				elseif typeOfMessage == "single off" then
-					turn_machine_off(s.deserialize(message))				
-				--if the message is to report on the group
-				elseif typeOfMessage == "group monitor" then
-					players[player].task = function()
-                        for k, machine in ipairs(stuffToMonitor.machines) do
-                            broadcastSingle(machine)
-                        end
-                    end
-				--if the message is to report on a single machine
-				elseif typeOfMessage == "single monitor" then
-					players[player].machineToFocus = find_machine(s.deserialize(message))
-					local coords = s.deserialize(message)
-					players[player].task = function()
-						broadcastSingle(players[player].machineToFocus)
-					end
+			if typeOfMessage == "group on" then
+				for index, machine in ipairs(stuffToMonitor.machines) do
+					machine.setWorkAllowed(true)
 				end
-			elseif group ~= groupName then
-				if typeOfMessage == "group monitor" then
-					players[player].task = function() end
-				elseif typeOfMessage == "single monitor" then
-					players[player].task = function() end
+				return true
+			end
+			if typeOfMessage == "group off" then
+				for index, machine in ipairs(stuffToMonitor.machines) do
+					machine.setWorkAllowed(false)
 				end
+				return true
 			end
 		end
 	end)
 	if not suc then print("Error handling command", err) end
 end
 
-event.listen("modem_message", modemMessageHandler)
+event.listen("modem_message", onModemMessage)
 event.listen("component_removed", init)
 event.listen("component_added", init)
 event.timer(120, broadcastMaintenance, math.huge)
@@ -487,19 +485,7 @@ print("Initialized and Running")
 
 while true do -- infinite loop
 	local suc, err = pcall(function()
-		local all = true
-		for player, playerTable in pairs(players) do
-			if not playerTable.all then
-				all = false
-			end
-		end
-		if all then
-			broadcastGroup()
-		else
-			for player, playerTable in pairs(players) do
-				playerTable.task()
-			end
-		end
+		broadcastUpdate()
 	end)
 	os.sleep(5)
 end

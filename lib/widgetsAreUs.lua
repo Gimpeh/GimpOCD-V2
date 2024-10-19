@@ -94,11 +94,14 @@ end
 -------------------------------------------
 --- Helper Functions
 
+---@param s string
 function widgetsAreUs.trim(s)
     print("widgetsAreUs - Line 88: Trimming string.")
     return (s:gsub("^%s*(.-)%s*$", "%1")):gsub("%c", "")
 end
 
+---@param textLabel table
+---@param player string 
 function widgetsAreUs.handleTextInput(textLabel, player)
     disableOnClick()
     local break_flag = false
@@ -156,6 +159,12 @@ end
 -------------------------------------------
 --- Base
 
+---@param x startCoordinate
+---@param y startCoordinate
+---@param width width
+---@param height height
+---@param color colorTable
+---@param alpha transparency
 function widgetsAreUs.createBox(x, y, width, height, color, alpha)
     print("widgetsAreUs - Line 135: Creating box.")
     local box = component.glasses.addRect()
@@ -178,6 +187,11 @@ function widgetsAreUs.createBox(x, y, width, height, color, alpha)
     return widgetsAreUs.attachCoreFunctions(box)
 end
 
+---@param x startCoordinate
+---@param y startCoordinate
+---@param text1 text
+---@param scale scale
+---@param color colorTable
 function widgetsAreUs.text(x, y, text1, scale, color)
     print("widgetsAreUs - Line 150: Creating text label.")
     local text = component.glasses.addTextLabel()
@@ -188,6 +202,16 @@ function widgetsAreUs.text(x, y, text1, scale, color)
     return widgetsAreUs.attachCoreFunctions(text)
 end
 
+---@param x startCoordinate
+---@param y startCoordinate
+---@param width width
+---@param height height
+---@param color colorTable
+---@param alpha transparency
+---@param text text
+---@param textScale scale
+---@param xOffset text_offset_x
+---@param yOffset text_offset_y
 function widgetsAreUs.textBox(x, y, width, height, color, alpha, text, textScale, xOffset, yOffset)
     print("widgetsAreUs - Line 158: Creating text box.")
     local element = {}
@@ -200,6 +224,16 @@ end
 -------------------------------------------
 --- Pop Up
 
+---@param x startCoordinate
+---@param y startCoordinate
+---@param width width
+---@param height height
+---@param line1 text
+---@param line2 optional_text
+---@param line3 optional_text
+---@param line4 optional_text
+---@param line5 optional_text
+---@param line6 optional_text
 function widgetsAreUs.popUp(x, y, width, height, line1, line2, line3, line4, line5, line6)
     print("widgetsAreUs - Line 166: Creating pop up.")
     local box = widgetsAreUs.createBox(x, y, width, height, c.beige, 0.5)
@@ -242,6 +276,9 @@ function widgetsAreUs.popUp(x, y, width, height, line1, line2, line3, line4, lin
     return widgetsAreUs.attachCoreFunctions(box)
 end
 
+---@param color colorTable
+---@param message text
+---@param timer timeTillRemoval
 function widgetsAreUs.alertMessage(color, message, timer)
     print("widgetsAreUs - Line 167: Creating alert message.")
     local box = widgetsAreUs.createBox(300, 200, 200, 100, color or c.brightred, 0.6)
@@ -259,6 +296,10 @@ function widgetsAreUs.alertMessage(color, message, timer)
     return {timer = timer}
 end
 
+---@param x number
+---@param y number
+---@param z number
+---@param color colorTable{r,g,b}       <-- This is normalized colors {0.5, 0.5, 0.5}
 function widgetsAreUs.beacon(x, y, z, color)
     print("widgetsAreUs - Line 180: Creating beacon.")
     local element = component.glasses.addDot3D()
@@ -273,24 +314,61 @@ function widgetsAreUs.beacon(x, y, z, color)
     return widgetsAreUs.attachCoreFunctions(element)
 end
 
+---@param playerName string
+function widgetsAreUs.textBox_popUp(player)
+    component.glasses = require("displays.glasses_display").getGlassesProxy(player)
+
+    local backgroundBox = widgetsAreUs.createBox(players[player].resolution.x/2 - 75, players[player].resolution.y/2 - 15, 150, 30, c.objectinfo, 0.6)
+    local text = widgetsAreUs.text(players[player].resolution.x/2 - 70, players[player].resolution.y/2 - 10, "Enter text", 1.5)
+    text.setColor(table.unpack(c.white))
+
+    local textInput = widgetsAreUs.handleTextInput(text, player)
+
+    component.glasses.removeObject(backgroundBox.getID())
+    component.glasses.removeObject(text.getID())
+
+    return textInput
+end
+
 -------------------------------------------
 --- Abstract
 
+---@param x xStart
+---@param y yStart
+---@param symbolText symbol
+---@param colorOrGreen colorTable
+---@param func onClickFunction
+---@param args funcArgs
 function widgetsAreUs.symbolBox(x, y, symbolText, colorOrGreen, func, args)
     print("widgetsAreUs - Line 193: Creating symbol box.")
     if not colorOrGreen then colorOrGreen = c.lime end
     local box = widgetsAreUs.createBox(x, y, 20, 20, colorOrGreen, 0.8)
     local symbol = widgetsAreUs.text(x+3, y+3, symbolText, 2)
 
-    box.onClick = function()
-        print("widgetsAreUs - Line 199: Symbol box clicked.")
-        widgetsAreUs.flash(box)
-        func(args)
+    if (args and type(args) ~= "table") or not args then
+        box.onClick = function()
+            print("widgetsAreUs - Line 199: Symbol box clicked.")
+            widgetsAreUs.flash(box)
+            func(args)
+        end
+    elseif args and type(args) == "table" then
+        box.onClick = function()
+            print("widgetsAreUs - Line 204: Symbol box clicked.")
+            widgetsAreUs.flash(box)
+            func(table.unpack(args))
+        end
     end
 
     return widgetsAreUs.attachCoreFunctions({box = box, symbol = symbol, onClick = box.onClick})
 end
 
+---@param x xStart
+---@param y yStart
+---@param width width
+---@param height height
+---@param color colorTable
+---@param alpha transparency
+---@param text1 text
 function widgetsAreUs.titleBox(x, y, width, height, color, alpha, text1)
     print("widgetsAreUs - Line 127: Creating a title box.")
     local box = widgetsAreUs.createBox(x, y, width, height, color, alpha)
@@ -300,6 +378,44 @@ end
 
 -------------------------------------------
 --- Specific
+
+--- Window Parts
+
+---@param x xStart
+---@param y yStart
+---@param length xEnd
+function widgetsAreUs.searchBar(x, y, length)
+    print("widgetsAreUs - Line 260: Creating search bar.")
+    local box = widgetsAreUs.createBox(x, y, length, 20, c.objectinfo, 0.7)
+    local text = widgetsAreUs.text(x+3, y+5, "Search", 1)
+
+    return widgetsAreUs.attachCoreFunctions({box = box, text = text,
+    getText = function()
+        print("widgetsAreUs - Line 265: Getting search bar text.")
+        return text.getText()
+    end,
+    setText = function(newText)
+        print("widgetsAreUs - Line 268: Setting search bar text.")
+        text.setText(newText)
+    end
+    })
+end
+
+---@param x xStart
+---@param y yStart
+---@param width width
+---@param text text
+function widgetsAreUs.windowTitle(x, y, width, text)
+    local titleBox = widgetsAreUs.createBox(x, y, width, 20, c.black, 0.8)
+    local title = widgetsAreUs.text(x+10, y+5, text, 1, c.white)
+
+    return widgetsAreUs.attachCoreFunctions({box = titleBox, text = title})
+end
+
+--- Objects
+--[[
+*!!   if planning on using PagedWindow, objects get the following args: `x, y, everythingRequiredForObjectCreation, OPTIONAL_arg`  !!*
+]]
 
 function widgetsAreUs.levelMaintainer(x, y, argsTable, player)
     print("widgetsAreUs - Line 208: Creating level maintainer.")
@@ -361,28 +477,76 @@ function widgetsAreUs.itemBox(x, y, itemStack)
     })
 end
 
-function widgetsAreUs.searchBar(x, y, length)
-    print("widgetsAreUs - Line 260: Creating search bar.")
-    local box = widgetsAreUs.createBox(x, y, length, 20, c.objectinfo, 0.7)
-    local text = widgetsAreUs.text(x+3, y+5, "Search", 1)
+function widgetsAreUs.machineGroup(x, y, groupTable)
+    local groupName = groupTable.name
+    local numOfMachines = #groupTable
 
-    return widgetsAreUs.attachCoreFunctions({box = box, text = text,
-    getText = function()
-        print("widgetsAreUs - Line 265: Getting search bar text.")
-        return text.getText()
+    local background = widgetsAreUs.createBox(x, y, 107, 75, {0, 0, 0}, 0.8)
+    local backgroundInterior = widgetsAreUs.createBox(x+5, y+5, 97, 65, c.object, 0.7)
+
+    local title = widgetsAreUs.text(x+8, y+10, groupName, 1.2, c.black)
+    local numberOfMachines = widgetsAreUs.text(x+70, y+50, tostring(numOfMachines), 1.2, c.black)
+    local canRunTitle = widgetsAreUs.text(x+8, y+50, "Allowed:", 1.5, c.black)
+    local canRun = widgetsAreUs.text(x+70, y+50, " ", 1.2, c.black)
+
+    return widgetsAreUs.attachCoreFunctions({background = background, backgroundInterior = backgroundInterior, title = title, numberOfMachines = numberOfMachines, canRunTitle = canRunTitle, canRun = canRun,
+    update = function(update_table)
+        print("widgetsAreUs - Line 472: Updating machine group.", groupName)
+        numberOfMachines.setText(tostring(update_table.numberOfMachines))
+        canRun.setText(tostring(update_table.allowed))
+        if update_table.allowed and update_table.allowed == 0 then
+            backgroundInterior.setColor(table.unpack(c.brightred))
+        elseif update_table.allowed and update_table.allowed > 0 and update_table.allowed < update_table.numberOfMachines then
+            backgroundInterior.setColor(table.unpack(c.yellow))
+        elseif update_table.allowed and update_table.allowed == update_table.numberOfMachines then
+            backgroundInterior.setColor(table.unpack(c.green))
+        end
     end,
-    setText = function(newText)
-        print("widgetsAreUs - Line 268: Setting search bar text.")
-        text.setText(newText)
+    onClick = function()
+        print("widgetsAreUs - Line 484: machineGroup clicked.", groupName)
     end
-    })
+})
 end
 
-function widgetsAreUs.windowTitle(x, y, width, text)
-    local titleBox = widgetsAreUs.createBox(x, y, width, 20, c.black, 0.8)
-    local title = widgetsAreUs.text(x+10, y+5, text, 1, c.white)
+function widgetsAreUs.machine(x, y, address)
+    print("widgetsAreUs - Line 505: Creating Machine Object")
+    local background = widgetsAreUs.createBox(x, y, 85, 34, c.object, 0.6)
+    local backgroundInterior = widgetsAreUs.createBox(x+3, y+3, 79, 28, c.object, 0.7)
+    local machineName = widgetsAreUs.text(x+5, y+5, "getting name", 0.8, c.black)
+    local beaconStatus = widgetsAreUs.createBox(x+78, y+27, 0, 0, c.rightred, 0.8)
+    local state = widgetsAreUs.text(x+22, y+24, "state", 1.2, c.black)
 
-    return widgetsAreUs.attachCoreFunctions({box = titleBox, text = title})
+    return widgetsAreUs.attachCoreFunctions({
+        background = background, backgroundInterior = backgroundInterior, machineName = machineName, beaconStatus = beaconStatus,
+        move = function(x2, y2)
+            print("widgetsAreUs - Line 514: Moving machine object.")
+            background.setPosition(x2, y2)
+            backgroundInterior.setPosition(x2+3, y2+3)
+            machineName.setPosition(x2+5, y2+5)
+            beaconStatus.setPosition(x2+78, y2+27)
+            state.setPosition(x2+22, y2+24)
+        end,
+        setName = function(name)
+            print("widgetsAreUs - Line 515: Setting machine name.")
+            machineName.setText(name)
+        end,
+        update = function(updateTable)
+            print("widgetsAreUs - Line 522: Updating machine object.")
+            if updateTable.allowed then
+                backgroundInterior.setColor(table.unpack(c.green))
+            else
+                backgroundInterior.setColor(table.unpack(c.brightred))
+            end
+            if updateTable.running then
+                state.setText("Running")
+            else
+                state.setText("Stopped")
+            end
+        end,
+        getAddress = function()
+            return address
+        end
+    })
 end
 
 return widgetsAreUs
