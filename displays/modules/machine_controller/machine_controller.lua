@@ -43,7 +43,7 @@ local function init_allFocus(player)
     
         print("mach_cont - 42: init_allFocus - creating display")
         local window = machine_controller.players[player].window
-        machine_controller.players[player].display = PagedWindow.new(machine_controller.groups, 107, 75, {x1 = window.x, y1 = window.y+64, x2 = window.x+window.width, y2 = window.y+window.height - 22}, 5, machine_controller.createGroupWidget, {player})
+        machine_controller.players[player].display = PagedWindow.new(machine_controller.groups, 107, 40, {x1 = window.x, y1 = window.y+64, x2 = window.x+window.width, y2 = window.y+window.height - 22}, 5, machine_controller.createGroupWidget, {player})
         machine_controller.players[player].prev = function() machine_controller.players[player].display:prevPage() end
         machine_controller.players[player].next = function() machine_controller.players[player].display:nextPage() end
     
