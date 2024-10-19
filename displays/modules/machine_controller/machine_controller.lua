@@ -14,6 +14,7 @@ machine_controller.onClick = nil
 machine_controller.onClickRight = nil
 machine_controller.remove = nil
 machine_controller.setVisible = nil
+machine_controller.onModemMessage = nil
 
 machine_controller.createGroupWidget = nil
 machine_controller.createMachineWidget = nil
@@ -93,6 +94,7 @@ function machine_controller.init(player)
     players[player].modules[cur_page].machine_controller.onClickRight = machine_controller.onClickRight
     players[player].modules[cur_page].machine_controller.remove = machine_controller.remove
     players[player].modules[cur_page].machine_controller.setVisible = machine_controller.setVisible
+    players[player].modules[cur_page].machine_controller.onModemMessage = machine_controller.onModemMessage
     print("mach_cont - 96: init - created module table")
 
     -- Create the background box
