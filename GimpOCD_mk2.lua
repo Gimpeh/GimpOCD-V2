@@ -4,9 +4,11 @@ local shell = require("shell")
 local args, options = shell.parse(...)
 
 local time = require("lib.timing")
-if args and args[1] and type(args[1]) == "number" then
-    time(args[1])
+if args and args[1] then
+    print("Setting time multiplier to " .. args[1])
+    time(tonumber(args[1]))
 else
+    print("Setting time multiplier to 1")
     time(1)
 end
 
