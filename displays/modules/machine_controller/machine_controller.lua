@@ -102,7 +102,7 @@ function machine_controller.init(player)
     print("mach_cont - 102: init - created background box")
 
     -- Create the title bar at the top (and attach a discreet function to the right click of it)
-    local title = widgetsAreUs.attachOnClickRight(widgetsAreUs.windowTitle(window.x, window.y, window.width, "Machine Overseer"), 
+    local title = widgetsAreUs.attachOnClickRight(widgetsAreUs.windowTitle(window.x, window.y, window.width, "Machine Controller"), 
     function(eventName, address, player, x, y, button)
         local context = contextMenu.init(x, y, player, {
             [1] = {text = "Remove Machine Controller", func = machine_controller.remove, args = {player}}
