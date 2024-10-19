@@ -44,8 +44,8 @@ local function init_allFocus(player)
         print("mach_cont - 42: init_allFocus - creating display")
         local window = machine_controller.players[player].window
         machine_controller.players[player].display = PagedWindow.new(machine_controller.groups, 107, 75, {x1 = window.x, y1 = window.y+64, x2 = window.x+window.width, y2 = window.y+window.height - 22}, 5, machine_controller.createGroupWidget, {player})
-        machine_controller.players[player].prev = function() machine_controller.display:prevPage() end
-        machine_controller.players[player].next = function() machine_controller.display:nextPage() end
+        machine_controller.players[player].prev = function() machine_controller.players[player].display:prevPage() end
+        machine_controller.players[player].next = function() machine_controller.players[player].display:nextPage() end
     
         print("mach_cont - 48: init_allFocus - displaying items")
         machine_controller.players[player].display:displayItems()
@@ -66,8 +66,8 @@ local function init_groupFocus(player, group)
         print("mach_cont - 61: init_groupFocus - creating display")
         local window = machine_controller.players[player].window
         machine_controller.players[player].display = PagedWindow.new(machine_controller.groups[group], 85, 34, {x1 = window.x, y1 = window.y+64, x2 = window.x+window.width, y2 = window.y+window.height - 22}, 5, machine_controller.createMachineWidget, {player})
-        machine_controller.players[player].prev = function() machine_controller.display:prevPage() end
-        machine_controller.players[player].next = function() machine_controller.display:nextPage() end
+        machine_controller.players[player].prev = function() machine_controller.players[player].display:prevPage() end
+        machine_controller.players[player].next = function() machine_controller.players[player].display:nextPage() end
     
         print("mach_cont - 67: init_groupFocus - displaying items")
         machine_controller.players[player].display:displayItems()
@@ -93,6 +93,8 @@ function machine_controller.init(player)
         machine_controller.players[player].window = window
         machine_controller.players[player].elements = {}
         machine_controller.players[player].named_machines = {}
+        machine_controller.players[player].prev = function() end
+        machine_controller.players[player].next = function() end
         print("mach_cont - 88: init - created player table", player)
     
         local cur_page = players[player].current_hudPage
@@ -123,8 +125,8 @@ function machine_controller.init(player)
         --***CREATE SEARCH BAR*** it should search machine names AND text players have set on the machine
     
         -- Paged Window Navigation Buttons
-        local prev_button = widgetsAreUs.symbolBox(window.x + ((window.width/2)-10), window.y+44, "▲", c.navbutton, machine_controller.prev, player)
-        local next_button = widgetsAreUs.symbolBox(window.x + ((window.width/2)-10), window.y+window.height-22, "▼", c.navbutton, machine_controller.next, player)
+        local prev_button = widgetsAreUs.symbolBox(window.x + ((window.width/2)-10), window.y+44, "▲", c.navbutton, machine_controller.players[player].prev, player)
+        local next_button = widgetsAreUs.symbolBox(window.x + ((window.width/2)-10), window.y+window.height-22, "▼", c.navbutton, machine_controller.players[player].next, player)
         machine_controller.players[player].elements.prev_button = prev_button
         machine_controller.players[player].elements.next_button = next_button
         print("mach_cont - 121: init - created navigation buttons")
@@ -264,7 +266,7 @@ function machine_controller.onModemMessage(messageType, group, message)
             return true
         elseif messageType == "update" then
             print("mach_cont - 225: update message recieved")
-            machine_controller.groups[messageTable.group].allowed = messageTable.allowed
+            machine_controller.groups[group].allowed = messageTable.allowed
             for k, v in ipairs(messageTable) do
                 machine_controller.machines[messageTable[k].address].running = messageTable[k].running
                 machine_controller.machines[messageTable[k].address].allowed = messageTable[k].allowed
