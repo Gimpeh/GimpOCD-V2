@@ -308,7 +308,7 @@ end
 --- Widgets
 
 machine_controller.createGroupWidget = function(x, y, group, player, detached, index)
-    local suc, err = pcall(function()
+    --local suc, err = pcall(function()
         print("mach_cont - 269: createGroupWidget", tostring(x), tostring(y), tostring(group), tostring(player), tostring(detached), tostring(index))
         component.glasses = require("displays.glasses_display").getGlassesProxy(player)
         local text
@@ -400,8 +400,8 @@ machine_controller.createGroupWidget = function(x, y, group, player, detached, i
         end
     
         return groupWidget
-    end)
-    if not suc then print("mach_cont - 352: createGroupWidget - error", tostring(err)) end
+    --end)
+    --if not suc then print("mach_cont - 352: createGroupWidget - error", tostring(err)) end
 end
 
 machine_controller.createMachineWidget = function(x, y, machineGroup, player, detached, index)
