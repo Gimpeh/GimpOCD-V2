@@ -15,6 +15,9 @@ machine_controller.onClickRight = nil
 machine_controller.remove = nil
 machine_controller.setVisible = nil
 
+machine_controller.createGroupWidget = nil
+machine_controller.createMachineWidget = nil
+
 local methodReturn = nil
 local remote_execute = nil
 
@@ -23,9 +26,6 @@ machine_controller.remote_execute_return = nil
 machine_controller.players = {}
 machine_controller.groups = {}
 machine_controller.machines = {}                                  
-
-local createGroupWidget
-local createMachineWidget
 
 --------------------------------------
 --- Initializations
@@ -41,7 +41,7 @@ local function init_allFocus(player)
 
     print("mach_cont - 42: init_allFocus - creating display")
     local window = machine_controller.players[player].window
-    machine_controller.players[player].display = PagedWindow.new(machine_controller.groups, 107, 75, {x1 = window.x, y1 = window.y+64, x2 = window.x+window.width, y2 = window.y+window.height - 22}, 5, createGroupWidget, player)
+    machine_controller.players[player].display = PagedWindow.new(machine_controller.groups, 107, 75, {x1 = window.x, y1 = window.y+64, x2 = window.x+window.width, y2 = window.y+window.height - 22}, 5, machine_controller.createGroupWidget, player)
     machine_controller.players[player].prev = function() machine_controller.display:prevPage() end
     machine_controller.players[player].next = function() machine_controller.display:nextPage() end
 
@@ -60,7 +60,7 @@ local function init_groupFocus(player, group)
 
     print("mach_cont - 61: init_groupFocus - creating display")
     local window = machine_controller.players[player].window
-    machine_controller.players[player].display = PagedWindow.new(machine_controller.groups[group], 85, 34, {x1 = window.x, y1 = window.y+64, x2 = window.x+window.width, y2 = window.y+window.height - 22}, 5, createMachineWidget, player)
+    machine_controller.players[player].display = PagedWindow.new(machine_controller.groups[group], 85, 34, {x1 = window.x, y1 = window.y+64, x2 = window.x+window.width, y2 = window.y+window.height - 22}, 5, machine_controller.createMachineWidget, player)
     machine_controller.players[player].prev = function() machine_controller.display:prevPage() end
     machine_controller.players[player].next = function() machine_controller.display:nextPage() end
 
@@ -373,7 +373,7 @@ machine_controller.createGroupWidget = function(x, y, group, player, detached, i
     return groupWidget
 end
 
-createMachineWidget = function(x, y, machineGroup, player, detached, index)
+machine_controller.createMachineWidget = function(x, y, machineGroup, player, detached, index)
     print("mach_cont - 356: createMachineWidget", tostring(x), tostring(y), tostring(machineGroup), tostring(player), tostring(detached), tostring(index))
     local machine = machineGroup.address
     local text = "Detach"
