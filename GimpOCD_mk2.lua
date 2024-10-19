@@ -1,17 +1,19 @@
 package.path = package.path .. ";/home/GimpOCD-V2/?.lua"
+
+local shell = require("shell")
+local args, options = shell.parse(...)
+
+local time = require("lib.timing")
+if args and args[1] and type(args[1]) == "number" then
+    time(args[1])
+else
+    time(1)
+end
+
 local event = require("event")
 component = require("component")
 local glasses_display = require("displays.glasses_display")
-timing = {}
-local time = require("lib.timing")
-local shell = require("shell")
 local thread = require("thread")
-
-
---------------------------------------
---- Shell Arguments
-
-local args, options = shell.parse(...)
 
 --[[local verbosity = false
 if options and options.verbose then
@@ -20,12 +22,6 @@ end
 if not verbosity then
     print = function() end
 end]]
-
-if args and args[1] and type(args[1]) == "number" then
-    time(args[1])
-else
-    time(1)
-end
 
 --------------------------------------
 --- Initialization - Events
