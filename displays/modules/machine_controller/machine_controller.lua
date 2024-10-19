@@ -144,7 +144,6 @@ end
 --- Command and Control
 
 function machine_controller.onClick(eventName, address, player, x, y, button)
-    local suc, err = pcall(function()
         print("mach_cont - 136: onClick", tostring(x), tostring(y), tostring(button))
         for key, element in pairs(machine_controller.players[player].elements) do
             if key == "backgroundBox" then
@@ -160,12 +159,9 @@ function machine_controller.onClick(eventName, address, player, x, y, button)
                 element.onClick(eventName, address, player, x, y, button)
             end
         end
-    end)
-    if not suc then print("mach_cont - 150: onClick - error", tostring(err)) end
 end
 
 function machine_controller.onClickRight(eventName, address, player, x, y, button)
-    local suc, err = pcall(function()
         print("mach_cont - 154: onClickRight", tostring(x), tostring(y), tostring(button))
         for key, element in pairs(machine_controller.players[player].elements) do
             if key == "backgroundBox" then
@@ -183,8 +179,6 @@ function machine_controller.onClickRight(eventName, address, player, x, y, butto
                 end
             end
         end
-    end)
-    if not suc then print("mach_cont - 169: onClickRight - error", tostring(err)) end
 end
 
 function machine_controller.remove(player)
