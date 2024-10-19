@@ -2,7 +2,7 @@ package.path = package.path .. ";/home/GimpOCD-V2/?.lua"
 local event = require("event")
 component = require("component")
 local glasses_display = require("displays.glasses_display")
-local time = require("lib.timing")
+timing = require("lib.timing")
 local shell = require("shell")
 local thread = require("thread")
 
@@ -21,9 +21,9 @@ if not verbosity then
 end]]
 
 if args and args[1] and type(args[1]) == "number" then
-    time(args[1])
+    timing(args[1])
 else
-    time(1)
+    timing(1)
 end
 
 --------------------------------------
