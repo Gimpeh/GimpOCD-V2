@@ -324,11 +324,7 @@ machine_controller.createGroupWidget = function(x, y, group, player, detached, i
             [2] = {text =  "Turn Group On", func = function() component.modem.broadcast(301, " ", group, "group on") end, args = {}},
             [3] = {text =  "Turn Group Off", func = function() component.modem.broadcast(301, " ", group, "group off") end, args = {}},
             [4] = {text = "Set Tag", func = function()
-                if not machine_controller.groups[group] then
-                    machine_controller.groups[group] = {}
-                end
-                
-                machine_controller.groups[group].tag = widgetsAreUs.getText_popUp(player)
+                --Do something with this eventually
             end
                 , args = {}},
             [5] = {text = text, func = function()
@@ -464,7 +460,7 @@ machine_controller.createMachineWidget = function(x, y, machineGroup, player, de
                     return
                 end
                 local args = {players[player].resolution.x - 85, 200, machine, player, true}
-                event.push("detach_element", createMachineWidget, args, player) end, args = {}}
+                event.push("detach_element", machine_controller.createMachineWidget, args, player) end, args = {}}
         }
         print("mach_cont - 411: createMachineWidget - finished base function table")
         if detached then funcTable[6] = {text = "Set Page", func = function()
