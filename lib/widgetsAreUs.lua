@@ -481,13 +481,13 @@ function widgetsAreUs.machineGroup(x, y, groupTable)
     local groupName = groupTable.name
     local numOfMachines = #groupTable
 
-    local background = widgetsAreUs.createBox(x, y, 107, 75, {0, 0, 0}, 0.8)
-    local backgroundInterior = widgetsAreUs.createBox(x+5, y+5, 97, 65, c.object, 0.7)
+    local background = widgetsAreUs.createBox(x, y, 107, 40, {0, 0, 0}, 0.8)
+    local backgroundInterior = widgetsAreUs.createBox(x+5, y+5, 97, 30, c.object, 0.7)
 
     local title = widgetsAreUs.text(x+8, y+10, groupName, 1.2, c.black)
     local numberOfMachines = widgetsAreUs.text(x+70, y+50, tostring(numOfMachines), 1.2, c.black)
-    local canRunTitle = widgetsAreUs.text(x+8, y+50, "Allowed:", 1.5, c.black)
-    local canRun = widgetsAreUs.text(x+70, y+50, " ", 1.2, c.black)
+    local canRunTitle = widgetsAreUs.text(x+8, y+20, "Allowed:", 1.5, c.black)
+    local canRun = widgetsAreUs.text(x+70, y+20, " ", 1.2, c.black)
 
     return widgetsAreUs.attachCoreFunctions({box = background, backgroundInterior = backgroundInterior, title = title, numberOfMachines = numberOfMachines, canRunTitle = canRunTitle, canRun = canRun,
     update = function(update_table)
