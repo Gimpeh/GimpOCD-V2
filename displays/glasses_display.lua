@@ -62,7 +62,6 @@ local function registerUsers(eventName, address, player, max_x, max_y)
         if not players[player].glasses_display.elements.detached then
             players[player].glasses_display.elements.detached = {}
         end
-        players[player].glasses_display.
         print("glasses_display - Line 64: Initializing HUD setup for player: " .. player)
         hudSetup.init(player)
         print("glasses_display - Line 66: Calling init_phase2 for player: " .. player)
