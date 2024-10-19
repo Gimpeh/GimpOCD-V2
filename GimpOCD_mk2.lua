@@ -92,7 +92,7 @@ end
 local modemThread = thread.create(modemListener)
 modemThread:detach()
 
-local function onPowerMessage(message1)
+local function onPowerMessage(eventType, message1)
     print("GimpOCD_mk2 - 71 - Power message received")
     for playerName, playerTable in pairs(players) do
         if players[playerName].modules[players[playerName].current_hudPage] and players[playerName].modules[players[playerName].current_hudPage].power_overseer then
@@ -102,7 +102,7 @@ local function onPowerMessage(message1)
     return true
 end
 
-local function onMachineUpdate(messageType, group, message)
+local function onMachineUpdate(eventType, messageType, group, message)
     for playerName, playerTable in pairs(players) do
         if players[playerName].modules[players[playerName].current_hudPage] and players[playerName].modules[players[playerName].current_hudPage].machine_controller then
             players[playerName].modules[players[playerName].current_hudPage].machine_controller.onModemMessage(messageType, group, message)

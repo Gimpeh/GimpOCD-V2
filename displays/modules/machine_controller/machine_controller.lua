@@ -230,8 +230,10 @@ function machine_controller.onModemMessage(messageType, group, message)
         init_timer = event.timer(timing.seven, function() event.push("machines_init") end, 1)
         --machine_controller.groups[group] = {}
         table.insert(machine_controller.groups, {name = group, allowed = 0})
-        for k, v in pairs(messageTable) do
+        print("mach_cont - 220: init message recieved - group added", s.serialize(machine_controller.groups))
+        for k, v in ipairs(messageTable) do
             table.insert(machine_controller.groups[#machine_controller.groups], messageTable[k])
+            print("mach_cont - 223: init message recieved - machine added", s.serialize(machine_controller.groups))
         end
         return true
     elseif messageType == "update" then
