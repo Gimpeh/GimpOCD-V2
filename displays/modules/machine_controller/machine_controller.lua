@@ -160,10 +160,12 @@ function machine_controller.onClickRight(eventName, address, player, x, y, butto
             element.onClickRight(eventName, address, player, x, y, button)
         end
     end
-    for key, element in ipairs(machine_controller.players[player].display.currentlyDisplayed) do
-        if element.box.contains(x, y) then
-            print("mach_cont - 165: display element contains click")
-            element.onClickRight(eventName, address, player, x, y, button)
+    if machine_controller.players[player].display then
+        for key, element in ipairs(machine_controller.players[player].display.currentlyDisplayed) do
+            if element.box.contains(x, y) then
+                print("mach_cont - 165: display element contains click")
+                element.onClickRight(eventName, address, player, x, y, button)
+            end
         end
     end
 end

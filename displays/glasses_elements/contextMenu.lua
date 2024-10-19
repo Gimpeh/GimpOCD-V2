@@ -56,7 +56,7 @@ function contextMenu.init(x2, y2, player, funcTable)
         end
 
         print("contextMenu - Line 41: Setting background box size")
-        players[player].contextMenu.elements.backgroundBox.setSize(i * choiceHeight, 100)
+        players[player].contextMenu.elements.backgroundBox.setSize(i * choiceHeight, 150)
         players[player].contextMenu.funcTable = funcTable
     end)
     if not suc then print("contextMenu - Line 46: " .. err) end
