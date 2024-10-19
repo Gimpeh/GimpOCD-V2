@@ -317,6 +317,7 @@ end
 --- Events
 
 local function detach(eventName, widgetFunc, args, player)
+    local suc, err = pcall(function()
     component.glasses = require("displays.glasses_display").getGlassesProxy(player)
 
     if not players[player].glasses_display.elements.detached then
@@ -326,7 +327,7 @@ local function detach(eventName, widgetFunc, args, player)
         players[player].glasses_display.elements.detached[players[player].current_hudPage] = {}
     end
 
-    local widget = widgetFunc(table.unpack(args), #players[player].glasses_display.elements.detached[players[player].current_hudPage]+1)
+    local widget = widgetFunc(table.unpack(args), (#players[player].glasses_display.elements.detached[players[player].current_hudPage]+1) or 1)
 
     widget.onDrag = function(eventName, address, player, x, y, button)
         widget.move(x+players[player].glasses_display.selectedForDrag.offset.x, y+players[player].glasses_display.selectedForDrag.offset.Y)
@@ -345,7 +346,10 @@ local function detach(eventName, widgetFunc, args, player)
     end
     
     table.insert(players[player].glasses_display.elements.detached[players[player].current_hudPage], widget)
+end)
+if not suc then print("glasses_display - 350: ", err) end
 end
+
 
 local updateTimer = event.timer(timing.ten, glasses_display.update, math.huge)
 event.listen("detach_element", detach)
