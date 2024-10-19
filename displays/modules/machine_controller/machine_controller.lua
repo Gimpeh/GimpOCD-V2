@@ -313,9 +313,9 @@ machine_controller.createGroupWidget = function(x, y, group, player, detached, i
         component.glasses = require("displays.glasses_display").getGlassesProxy(player)
         local text
         if detached then
-            text = "Attach Element"
-        else
             text = "Remove Element"
+        else
+            text = "Attach Element"
         end
     
         print("mach_cont - 273: createGroupWidget - creating widget")
