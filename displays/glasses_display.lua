@@ -28,6 +28,7 @@ local function registerUsers(eventName, address, player, max_x, max_y)
         if not players[player] then
             players[player]={}
         end
+        players[player].resolution = {x=max_x, y=max_y}
         if not players[player].modules then
             players[player].modules = {}
         end
@@ -327,6 +328,10 @@ local function detach(eventName, widgetFunc, args, player)
 
     local widget = widgetFunc(table.unpack(args), #players[player].glasses_display.elements.detached[players[player].current_hudPage]+1)
 
+    widget.onDrag = function(eventName, address, player, x, y, button)
+        widget.move(x+players[player].glasses_display.selectedForDrag.offset.x, y+players[player].glasses_display.selectedForDrag.offset.Y)
+    end
+
     widget.onClick = function(eventName, address, player, x, y, button)
         print("glasses_display - Line 272: onClick called for detached widget")
         local suc, err = pcall(function()
@@ -337,10 +342,6 @@ local function detach(eventName, widgetFunc, args, player)
                 players[player].glasses_display.selectedForDrag.offset = {x = x-startX, y = y-startY}
             end
         end)
-    end
-
-    widget.onDrag = function(eventName, address, player, x, y, button)
-        widget.move(x+players[player].glasses_display.selectedForDrag.offset.x, y+players[player].glasses_display.selectedForDrag.offset.Y)
     end
     
     table.insert(players[player].glasses_display.elements.detached[players[player].current_hudPage], widget)
