@@ -22,8 +22,6 @@ machine_controller.createMachineWidget = nil
 local methodReturn = nil
 local remote_execute = nil
 
-machine_controller.remote_execute_return = nil
-
 machine_controller.players = {}
 machine_controller.groups = {}
 machine_controller.machines = {}                                  
@@ -266,7 +264,12 @@ function machine_controller.onModemMessage(messageType, group, message)
             return true
         elseif messageType == "update" then
             print("mach_cont - 225: update message recieved")
-            machine_controller.groups[group].allowed = messageTable.allowed
+            for k, v in ipairs(machine_controller.groups) do
+                if machine_controller.groups[k].name == group then
+                    machine_controller.groups[k].allowed = messageTable.allowed
+                    print("mach_cont - 229: update message recieved - group updated", group)
+                end
+            end            
             for k, v in ipairs(messageTable) do
                 machine_controller.machines[messageTable[k].address].running = messageTable[k].running
                 machine_controller.machines[messageTable[k].address].allowed = messageTable[k].allowed
