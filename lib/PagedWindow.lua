@@ -65,6 +65,7 @@ function PagedWindow:clearDisplayedItems()
                 print("element has no remove method")
             end
         end
+        print("PagedWindow - Line 40: Cleared displayed items.")
         self.currentlyDisplayed = {}
     end)
     if not success then
