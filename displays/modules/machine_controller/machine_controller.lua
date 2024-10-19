@@ -188,7 +188,6 @@ function machine_controller.onClickRight(eventName, address, player, x, y, butto
 end
 
 function machine_controller.remove(player)
-    local suc, err = pcall(function()
         component.glasses = require("displays.glasses_display").getGlassesProxy(player)
         print("mach_cont - 173: remove", tostring(player))
         if machine_controller.players[player].display then
@@ -199,8 +198,6 @@ function machine_controller.remove(player)
             v.remove()
             machine_controller.players[player].elements[k] = nil
         end
-    end)
-    if not suc then print("mach_cont - 181: remove - error", tostring(err)) end
 end
 
 function machine_controller.setVisible(player, visible)
