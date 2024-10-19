@@ -142,7 +142,7 @@ function machine_controller.onClick(eventName, address, player, x, y, button)
             element.onClick(eventName, address, player, x, y, button)
         end
     end
-    for key, element in ipairs(machine_controller.players[player].display) do
+    for key, element in ipairs(machine_controller.players[player].display.currentlyDisplayed) do
         if element.box.contains(x, y) then
             print("mach_cont - 147: display element contains click")
             element.onClick(eventName, address, player, x, y, button)
@@ -160,7 +160,7 @@ function machine_controller.onClickRight(eventName, address, player, x, y, butto
             element.onClickRight(eventName, address, player, x, y, button)
         end
     end
-    for key, element in ipairs(machine_controller.players[player].display) do
+    for key, element in ipairs(machine_controller.players[player].display.currentlyDisplayed) do
         if element.box.contains(x, y) then
             print("mach_cont - 165: display element contains click")
             element.onClickRight(eventName, address, player, x, y, button)
@@ -187,8 +187,16 @@ function machine_controller.setVisible(player, visible)
     for k, v in pairs(machine_controller.players[player].elements) do
         v.setVisible(visible)
     end
-    for k, v in ipairs(machine_controller.players[player].display) do
+    for k, v in ipairs(machine_controller.players[player].display.currentlyDisplayed) do
         v.setVisible(visible)
+    end
+end
+
+function machine_controller.update()
+    for playerName, playerTable in pairs(machine_controller.players) do
+        for k, v in pairs(machine_controller.players[playerName].display.currentlyDisplayed) do
+            v.update()
+        end
     end
 end
 
@@ -348,6 +356,18 @@ machine_controller.createGroupWidget = function(x, y, group, player, detached, i
     end)
     print("mach_cont - 349: createGroupWidget - finished attaching onClickRight")
     groupWidget.funcTable = funcTable
+
+    groupWidget.update = function()
+        if machine_controller.groups[group].allowed and machine_controller.groups[group].allowed == #machine_controller.groups[group] then
+            groupWidget.backgroundInterior.setColor(0, 1, 0)
+        elseif machine_controller.groups[group].allowed and machine_controller.groups[group].allowed < #machine_controller.groups[group] and machine_controller.groups[group].allowed > 0 then
+            groupWidget.backgroundInterior.setColor(table.unpack(c.yellow))
+        elseif machine_controller.groups[group].allowed and machine_controller.groups[group].allowed == 0 then
+            groupWidget.backgroundInterior.setColor(1, 0, 0)
+        end
+        groupWidget.canRun.setText(tostring(machine_controller.groups[group].allowed))
+    end
+
     return groupWidget
 end
 
@@ -449,6 +469,19 @@ createMachineWidget = function(x, y, machineGroup, player, detached, index)
         local context = contextMenu.init(x2, y2, player, funcTable)
     end)
     print("mach_cont - 451: createMachineWidget - finished attaching onClickRight")
+    
+    machineWidget.update = function()
+        if machine_controller.machines[machine].running then
+            machineWidget.state.setText("Running")
+        else
+            machineWidget.state.setText("Stopped")
+        end
+        if machine_controller.machines[machine].allowed then
+            machineWidget.backgroundInterior.setColor(0, 1, 0)
+        else
+            machineWidget.backgroundInterior.setColor(1, 0, 0)
+        end
+    end
 
     return machineWidget
 end

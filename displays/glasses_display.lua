@@ -233,6 +233,12 @@ glasses_display.onClick = function(eventName, address, player, x, y, button)
             elseif players[player].hudSetup.elements then
                 print("glasses_display - Line 207: HUD setup onClick triggered for player: " .. player)
                 hudSetup.onClick(eventName, address, player, x, y, button)
+            elseif players[player].glasses_display.elements.detached and players[player].glasses_display.elements.detached[players[player].current_hudPage] then
+                for _, widget in ipairs(players[player].glasses_display.elements.detached[players[player].current_hudPage]) do
+                    if widget.box.contains(x, y) then
+                        widget.onClick(eventName, address, player, x, y, button)
+                    end
+                end
             else
                 for moduleName, module in pairs(players[player].modules[players[player].current_hudPage]) do
                     if module and module.backgroundBox and module.backgroundBox.contains(x, y) then
@@ -254,6 +260,12 @@ glasses_display.onClickRight = function(eventName, address, player, x, y, button
             elseif players[player].hudSetup.elements then
                 print("glasses_display - Line 225: HUD setup onClickRight triggered for player: " .. player)
                 hudSetup.onClickRight(eventName, address, player, x, y, button)
+            elseif players[player].glasses_display.elements.detached and players[player].glasses_display.elements.detached[players[player].current_hudPage] then
+                for _, widget in ipairs(players[player].glasses_display.elements.detached[players[player].current_hudPage]) do
+                    if widget.box.contains(x, y) then
+                        widget.onClickRight(eventName, address, player, x, y, button)
+                    end
+                end
             else
                 for moduleName, module in pairs(players[player].modules[players[player].current_hudPage]) do
                     if module and module.backgroundBox and module.backgroundBox.contains(x, y) then
@@ -278,6 +290,8 @@ glasses_display.onDrag = function(eventName, address, player, x, y, button)
                     print("glasses_display - Line 243: HUD setup onDrag triggered for player: " .. player)
                     hudSetup.onDrag(eventName, address, player, x, y, button)
                 end
+            elseif players[player].glasses_display.selectedForDrag and players[player].glasses_display.selectedForDrag.func then
+                players[player].glasses_display.selectedForDrag.func(x, y)
             end
         end
     end)
@@ -333,6 +347,7 @@ local function detach(widgetFunc, args, player)
     table.insert(players[player].glasses_display.elements.detached[players[player].current_hudPage], widget)
 end
 
+local updateTimer = event.timer(timing.ten, glasses_display.update, math.huge)
 event.listen("detach_element", detach)
 
 return glasses_display
