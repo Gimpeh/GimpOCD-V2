@@ -228,9 +228,10 @@ function machine_controller.onModemMessage(messageType, group, message)
             event.cancel(init_timer)
         end
         init_timer = event.timer(timing.seven, function() event.push("machines_init") end, 1)
-        machine_controller.groups[group] = {}
+        --machine_controller.groups[group] = {}
+        table.insert(machine_controller.groups, {name = group, allowed = 0})
         for k, v in pairs(messageTable) do
-            table.insert(machine_controller.groups[group], messageTable[k])
+            table.insert(machine_controller.groups[#machine_controller.groups], messageTable[k])
         end
         return true
     elseif messageType == "update" then
