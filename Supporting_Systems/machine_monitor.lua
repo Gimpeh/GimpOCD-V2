@@ -143,8 +143,6 @@ local function init()
 	modem.open(commandsPort)	--open port for recieving commands (port 301)
 	modem.open(remoteReturnPort)	--open port for returning information from remote commands (port 302)
 	sortProxies(proxyAll())		--first proxy all gregtech 'components', then sort them into appropriate tables
-	
-	broadcastInit()
 end
 
 ---------------------------------------------------------------

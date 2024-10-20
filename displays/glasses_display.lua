@@ -211,11 +211,13 @@ end
 
 glasses_display.onClick = function(eventName, address, player, x, y, button)
     print("glasses_display - Line 190: onClick called for player: " .. player)
-    --local suc, err = pcall(function()
+    local suc, err = pcall(function()
         local short = players[player].glasses_display.elements
 
         if eventName == "hud_click" and button == 0 then
-            players[player].glasses_display.selectedForDrag.func = function() end
+            if players[player].glasses_display.selectedForDrag then
+                players[player].glasses_display.selectedForDrag.func = function() end
+            end
             if players[player].contextMenu and players[player].contextMenu.elements then
                 if players[player].contextMenu.elements.backgroundBox.contains(x, y) then
                     contextMenu.onClick(eventName, address, player, x, y, button)
@@ -256,8 +258,8 @@ glasses_display.onClick = function(eventName, address, player, x, y, button)
                     end
                 end
         end
-    --end)
-    --if not suc then print(err) end
+    end)
+    if not suc then print(err) end
 end
 
 glasses_display.onClickRight = function(eventName, address, player, x, y, button)
@@ -274,8 +276,10 @@ glasses_display.onClickRight = function(eventName, address, player, x, y, button
                 return true
             end
             if players[player].glasses_display.elements.detached and players[player].glasses_display.elements.detached[players[player].current_hudPage] then
-                for _, widget in ipairs(players[player].glasses_display.elements.detached[players[player].current_hudPage]) do
-                    if widget.box.contains(x, y) then
+                for k, widget in ipairs(players[player].glasses_display.elements.detached[players[player].current_hudPage]) do
+                    if not widget or not widget.box then 
+                        table.remove(players[player].glasses_display.elements.detached[players[player].current_hudPage], k)
+                    elseif widget.box.contains(x, y) then
                         widget.onClickRight(eventName, address, player, x, y, button)
                         return true
                     end
@@ -371,6 +375,12 @@ local function detach(eventName, player)
                 players[player].glasses_display.selectedForDrag.offset = {x = x-startX, y = y-startY}
             end
         end)
+    end
+
+    local rem = widget.remove
+    widget.remove = function()
+        rem()
+        widget = nil
     end
     
     table.insert(players[player].glasses_display.elements.detached[players[player].current_hudPage], widget)

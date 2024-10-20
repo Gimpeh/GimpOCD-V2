@@ -15,6 +15,7 @@ machine_controller.onClickRight = nil
 machine_controller.remove = nil
 machine_controller.setVisible = nil
 machine_controller.onModemMessage = nil
+machine_controller.update = nil
 
 machine_controller.createGroupWidget = nil
 machine_controller.createMachineWidget = nil
@@ -75,6 +76,7 @@ end
 
 function machine_controller.init(player)
     local suc, err = pcall(function()
+        players[player].modules.available.machine_controller = nil
         print("mach_cont - 72: init", tostring(player))
         component.modem.broadcast(301, player, " ", "init", " ")
     
@@ -102,6 +104,7 @@ function machine_controller.init(player)
         players[player].modules[cur_page].machine_controller.remove = machine_controller.remove
         players[player].modules[cur_page].machine_controller.setVisible = machine_controller.setVisible
         players[player].modules[cur_page].machine_controller.onModemMessage = machine_controller.onModemMessage
+        players[player].modules[cur_page].machine_controller.update = machine_controller.update
         print("mach_cont - 96: init - created module table")
     
         -- Create the background box
@@ -192,9 +195,10 @@ function machine_controller.remove(player)
             v.remove()
             machine_controller.players[player].elements[k] = nil
         end
+        players[player].modules.available.machine_controller = require("displays.modules.machine_controller.machine_controller").init
 end
 
-function machine_controller.setVisible(player, visible)
+function machine_controller.setVisible(visible, player)
     local suc, err = pcall(function()
         component.glasses = require("displays.glasses_display").getGlassesProxy(player)
         print("mach_cont - 186: setVisible", tostring(player), tostring(visible))
