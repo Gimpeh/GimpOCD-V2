@@ -116,6 +116,10 @@ local function sortProxies(gt_machines)
 		-- Check if the first part matches "hatch.energy"
 		return first_part == prefix
 	end
+	stuffToMonitor = {}				--initialize the table
+	stuffToMonitor.tanks = {}
+	stuffToMonitor.machines = {}
+	stuffToMonitor.energyHatches = {}
 
 	-- the business side of this function
 	-- which sorts components into their respective tables
@@ -446,6 +450,9 @@ end
 -- the wireless message handler. Used to turn machines on and off when correct message is sent
  local onModemMessage = function(_, _, _, port, _, player, group, typeOfMessage, message)
 	local suc, err = pcall(function()
+		if port == metricsPort then
+			return
+		end
 		if group == groupName or group == "all" then
 			if typeOfMessage == "init" then
 				broadcastInit()
