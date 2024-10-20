@@ -328,6 +328,11 @@ glasses_display.update = function()
                 end
             end
         end
+        for index, widget in pairs (players[player].glasses_display.elements.detached[players[player].current_hudPage]) do
+            if widget and widget.update then
+                widget.update()
+            end
+        end
     end)
     if not suc then print(err) end
 end

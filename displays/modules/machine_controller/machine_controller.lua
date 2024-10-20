@@ -61,7 +61,7 @@ local function init_groupFocus(player, group)
             machine_controller.players[player].display:clearDisplayedItems()
             machine_controller.players[player].display = nil
         end
-    
+
         print("mach_cont - 61: init_groupFocus - creating display")
         local window = machine_controller.players[player].window
         machine_controller.players[player].display = PagedWindow.new(group, 85, 34, {x1 = window.x, y1 = window.y+64, x2 = window.x+window.width, y2 = window.y+window.height - 22}, 5, machine_controller.createMachineWidget, {player})
@@ -131,6 +131,9 @@ function machine_controller.init(player)
         machine_controller.players[player].elements.prev_button = prev_button
         machine_controller.players[player].elements.next_button = next_button
         print("mach_cont - 121: init - created navigation buttons")
+
+        local back_button = widgetsAreUs.symbolBox(machine_controller.players[player].window.x + window.width - 25, machine_controller.players[player].window.y+44, "◄", c.navbutton, init_allFocus, player)
+        machine_controller.players[player].elements.back_button = back_button
     
         -- Create a re-populate button
     
@@ -319,7 +322,7 @@ machine_controller.createGroupWidget = function(x, y, group, player, detached, i
         if detached then
             text = "Remove Element"
         else
-            text = "Attach Element"
+            text = "Detach Element"
         end
     
         print("mach_cont - 273: createGroupWidget - creating widget")
@@ -341,12 +344,11 @@ machine_controller.createGroupWidget = function(x, y, group, player, detached, i
                         detached = false
                         return
                     end
-                    --popup explaining.. then detach that widget object and place it nearby.
-                    --set the objects drag and click up to be able to move the widget around the display
-                    --extend the objects context menu to include "Remove"
-                    local args = {players[player].resolution.x - 107, 200, group, player, true}
-                    event.push("detach_element", machine_controller.createGroupWidget, args, player) end, args = {}},
-        }
+
+                    players[player].detach_method = machine_controller.createGroupWidget
+                    players[player].detach_args = {players[player].resolution.x - 107, 200, group, player, true}
+                    event.push("detach_element", player) end, args = {}}
+                    }
         print("mach_cont - 303: createGroupWidget - finished base function table")
         if detached then funcTable[6] = {text = "Set Page", func = function()
             local contextMenu = contextMenu.init(x, y, player, {
@@ -391,11 +393,11 @@ machine_controller.createGroupWidget = function(x, y, group, player, detached, i
         groupWidget.funcTable = funcTable
     
         groupWidget.update = function()
-            if machine_controller.groups[group].allowed and machine_controller.groups[group].allowed == #machine_controller.groups[group] then
+            if group.allowed and group.allowed == #group then
                 groupWidget.backgroundInterior.setColor(0, 1, 0)
-            elseif machine_controller.groups[group].allowed and machine_controller.groups[group].allowed < #machine_controller.groups[group] and machine_controller.groups[group].allowed > 0 then
+            elseif group.allowed and group.allowed < #group and group.allowed > 0 then
                 groupWidget.backgroundInterior.setColor(table.unpack(c.yellow))
-            elseif machine_controller.groups[group].allowed and machine_controller.groups[group].allowed == 0 then
+            elseif group.allowed and group.allowed == 0 then
                 groupWidget.backgroundInterior.setColor(1, 0, 0)
             end
             groupWidget.canRun.setText(tostring(machine_controller.groups[group].allowed))
