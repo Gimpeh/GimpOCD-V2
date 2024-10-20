@@ -181,7 +181,7 @@ function widgetsAreUs.createBox(x, y, width, height, color, alpha)
     end
     function box.contains(px, py)
         print("widgetsAreUs - Line 143: Checking if point is inside box.")
-        return px >= x and px <= box.x2 and py >= y and py <= box.y2
+        return px >= box.x and px <= box.x2 and py >= box.y and py <= box.y2
     end
     box.width = width box.height = height
     return widgetsAreUs.attachCoreFunctions(box)
@@ -513,11 +513,11 @@ function widgetsAreUs.machine(x, y, address)
     local background = widgetsAreUs.createBox(x, y, 85, 34, c.object, 0.6)
     local backgroundInterior = widgetsAreUs.createBox(x+3, y+3, 79, 28, c.object, 0.7)
     local machineName = widgetsAreUs.text(x+5, y+5, "getting name", 0.8, c.black)
-    local beaconStatus = widgetsAreUs.createBox(x+78, y+27, 0, 0, c.rightred, 0.8)
+    local beaconStatus = widgetsAreUs.createBox(x+78, y+27, 0, 0, c.red, 0.8)
     local state = widgetsAreUs.text(x+22, y+24, "state", 1.2, c.black)
 
     return widgetsAreUs.attachCoreFunctions({
-        box = background, backgroundInterior = backgroundInterior, machineName = machineName, beaconStatus = beaconStatus,
+        box = background, backgroundInterior = backgroundInterior, machineName = machineName, beaconStatus = beaconStatus, state = state,
         move = function(x2, y2)
             print("widgetsAreUs - Line 514: Moving machine object.")
             background.setPosition(x2, y2)
@@ -529,19 +529,6 @@ function widgetsAreUs.machine(x, y, address)
         setName = function(name)
             print("widgetsAreUs - Line 515: Setting machine name.")
             machineName.setText(name)
-        end,
-        update = function(updateTable)
-            print("widgetsAreUs - Line 522: Updating machine object.")
-            if updateTable.allowed then
-                backgroundInterior.setColor(table.unpack(c.green))
-            else
-                backgroundInterior.setColor(table.unpack(c.brightred))
-            end
-            if updateTable.running then
-                state.setText("Running")
-            else
-                state.setText("Stopped")
-            end
         end,
         getAddress = function()
             return address

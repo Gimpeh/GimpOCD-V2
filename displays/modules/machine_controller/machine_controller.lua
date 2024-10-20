@@ -52,8 +52,8 @@ local function init_allFocus(player)
 end
 
 local function init_groupFocus(player, group)
-    local suc, err = pcall(function()
-        print("mach_cont - 53: init_groupFocus", tostring(player), tostring(group))
+    --local suc, err = pcall(function()
+        print("mach_cont - 53: init_groupFocus", tostring(player), s.serialize(group))
         component.glasses = require("displays.glasses_display").getGlassesProxy(player)
         if machine_controller.players[player].display then
             print("mach_cont - 56: init_groupFocus - clearing display")
@@ -63,14 +63,14 @@ local function init_groupFocus(player, group)
     
         print("mach_cont - 61: init_groupFocus - creating display")
         local window = machine_controller.players[player].window
-        machine_controller.players[player].display = PagedWindow.new(machine_controller.groups[group], 85, 34, {x1 = window.x, y1 = window.y+64, x2 = window.x+window.width, y2 = window.y+window.height - 22}, 5, machine_controller.createMachineWidget, {player})
+        machine_controller.players[player].display = PagedWindow.new(group, 85, 34, {x1 = window.x, y1 = window.y+64, x2 = window.x+window.width, y2 = window.y+window.height - 22}, 5, machine_controller.createMachineWidget, {player})
         machine_controller.players[player].elements.prev_button.onClick = function() machine_controller.players[player].display:prevPage() end
         machine_controller.players[player].elements.next_button.onClick = function() machine_controller.players[player].display:nextPage() end
     
         print("mach_cont - 67: init_groupFocus - displaying items")
         machine_controller.players[player].display:displayItems()
-    end)
-    if not suc then print("mach_cont - 70: init_groupFocus - error", tostring(err)) end
+    --end)
+    --if not suc then print("mach_cont - 70: init_groupFocus - error", tostring(err)) end
 end
 
 function machine_controller.init(player)
@@ -249,7 +249,7 @@ function machine_controller.onModemMessage(messageType, group, message)
             table.insert(machine_controller.groups, {name = group, allowed = 0})
             print("mach_cont - 220: init message recieved - group added", group)
             for k, v in ipairs(messageTable) do
-                table.insert(machine_controller.groups[#machine_controller.groups], messageTable[k])
+                table.insert(machine_controller.groups[#machine_controller.groups or 1], messageTable[k])
                 print("mach_cont - 223: init message recieved - machine added", messageTable[k].name)
             end
             return true
@@ -424,7 +424,7 @@ machine_controller.createMachineWidget = function(x, y, machineGroup, player, de
         print("mach_cont - 372: createMachineWidget - setting up function table")
         local funcTable = {
             [1] = {text = "Set Name", func = function()
-                machine_controller.machines[machine].name = widgetsAreUs.getText_popUp(player)
+                machine_controller.machines[machine].name = widgetsAreUs.textBox_popUp(player)
                 machineWidget.setName(machine_controller.machines[machine].name)
              end, args = {player}},
             [2] = {text = "Turn Machine On", func = function() remote_execute(machine, "setWorkAllowed", s.serialize({true}), player) end, args = {}},
@@ -457,8 +457,9 @@ machine_controller.createMachineWidget = function(x, y, machineGroup, player, de
                     detached = false
                     return
                 end
-                local args = {players[player].resolution.x - 85, 200, machine, player, true}
-                event.push("detach_element", machine_controller.createMachineWidget, args, player) end, args = {}}
+                players[player].detach_method = machine_controller.createMachineWidget
+                players[player].detach_args = {players[player].resolution.x - 85, 200, machineGroup, player, true}
+                event.push("detach_element", player) end, args = {}}
         }
         print("mach_cont - 411: createMachineWidget - finished base function table")
         if detached then funcTable[6] = {text = "Set Page", func = function()
@@ -497,8 +498,9 @@ machine_controller.createMachineWidget = function(x, y, machineGroup, player, de
         } end
         print("mach_cont - 446: createMachineWidget - finished function table")
     
+        machineWidget.funcTable = funcTable
         machineWidget = widgetsAreUs.attachOnClickRight(machineWidget, function(eventName, address, player, x2, y2, button)
-            local context = contextMenu.init(x2, y2, player, funcTable)
+            local context = contextMenu.init(x2, y2, player, machineWidget.funcTable)
         end)
         print("mach_cont - 451: createMachineWidget - finished attaching onClickRight")
         

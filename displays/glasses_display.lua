@@ -4,6 +4,7 @@ local hudSetup = require("displays.glasses_elements.hudSetup")
 local widgetsAreUs = require("lib.widgetsAreUs")
 local c = require("lib.gimp_colors")
 local contextMenu = require("displays.glasses_elements.contextMenu")
+local machine_controller = require("displays.modules.machine_controller.machine_controller")
 
 -------------------------------------------------------
 --- Module Context Vars & Functions + Forward Decs
@@ -214,38 +215,46 @@ glasses_display.onClick = function(eventName, address, player, x, y, button)
         local short = players[player].glasses_display.elements
 
         if eventName == "hud_click" and button == 0 then
+            players[player].glasses_display.selectedForDrag.func = function() end
             if players[player].contextMenu and players[player].contextMenu.elements then
                 if players[player].contextMenu.elements.backgroundBox.contains(x, y) then
                     contextMenu.onClick(eventName, address, player, x, y, button)
                 else
                     contextMenu.remove(player)
                 end
+                return true
             elseif short[1].box.contains(x, y) then
                 short[1].onClick()
+                return true
             elseif short[2].box.contains(x, y) then
                 short[2].onClick()
+                return true
             elseif short[3].box.contains(x, y) then
                 short[3].onClick()
+                return true
             elseif short.grid_button.box.contains(x, y) then
                 short.grid_button.onClick()
+                return true
             elseif players[player].popUp and players[player].popUp.contains(x, y) then
                 players[player].popUp.onClick(eventName, address, player, x, y, button)
+                return true
             elseif players[player].hudSetup.elements then
                 print("glasses_display - Line 207: HUD setup onClick triggered for player: " .. player)
                 hudSetup.onClick(eventName, address, player, x, y, button)
+                return true
             elseif players[player].glasses_display.elements.detached and players[player].glasses_display.elements.detached[players[player].current_hudPage] then
                 for _, widget in ipairs(players[player].glasses_display.elements.detached[players[player].current_hudPage]) do
                     if widget.box.contains(x, y) then
                         widget.onClick(eventName, address, player, x, y, button)
+                        return true
                     end
                 end
-            else
+            end
                 for moduleName, module in pairs(players[player].modules[players[player].current_hudPage]) do
                     if module and module.backgroundBox and module.backgroundBox.contains(x, y) then
                         module.onClick(eventName, address, player, x, y, button)
                     end
                 end
-            end
         end
     --end)
     --if not suc then print(err) end
@@ -257,22 +266,28 @@ glasses_display.onClickRight = function(eventName, address, player, x, y, button
         if eventName == "hud_click" and button == 1 then
             if players[player].contextMenu and players[player].contextMenu.elements and players[player].contextMenu.elements.backgroundBox.contains(x, y) then
                 contextMenu.onClickRight(eventName, address, player, x, y, button)
-            elseif players[player].hudSetup.elements then
+                return true
+            end
+            if players[player].hudSetup.elements then
                 print("glasses_display - Line 225: HUD setup onClickRight triggered for player: " .. player)
                 hudSetup.onClickRight(eventName, address, player, x, y, button)
-            elseif players[player].glasses_display.elements.detached and players[player].glasses_display.elements.detached[players[player].current_hudPage] then
+                return true
+            end
+            if players[player].glasses_display.elements.detached and players[player].glasses_display.elements.detached[players[player].current_hudPage] then
                 for _, widget in ipairs(players[player].glasses_display.elements.detached[players[player].current_hudPage]) do
                     if widget.box.contains(x, y) then
                         widget.onClickRight(eventName, address, player, x, y, button)
-                    end
-                end
-            else
-                for moduleName, module in pairs(players[player].modules[players[player].current_hudPage]) do
-                    if module and module.backgroundBox and module.backgroundBox.contains(x, y) then
-                        module.onClickRight(eventName, address, player, x, y, button)
+                        return true
                     end
                 end
             end
+        
+                for moduleName, module in pairs(players[player].modules[players[player].current_hudPage]) do
+                    if module and module.backgroundBox and module.backgroundBox.contains(x, y) then
+                        module.onClickRight(eventName, address, player, x, y, button)
+                        return true
+                    end
+                end
         end
     --end)
     --if not suc then print(err) end
@@ -291,7 +306,7 @@ glasses_display.onDrag = function(eventName, address, player, x, y, button)
                     hudSetup.onDrag(eventName, address, player, x, y, button)
                 end
             elseif players[player].glasses_display.selectedForDrag and players[player].glasses_display.selectedForDrag.func then
-                players[player].glasses_display.selectedForDrag.func(x, y)
+                players[player].glasses_display.selectedForDrag.func(eventName, address, player, x, y, button)
             end
         end
     end)
@@ -316,30 +331,43 @@ end
 -------------------------------------------------------
 --- Events
 
-local function detach(eventName, widgetFunc, args, player)
+local function detach(eventName, player)
     local suc, err = pcall(function()
     component.glasses = require("displays.glasses_display").getGlassesProxy(player)
 
     if not players[player].glasses_display.elements.detached then
         players[player].glasses_display.elements.detached = {}
     end
-    if not players[player].glasses_display.elements.detached[players[player].current_hudPage] then
-        players[player].glasses_display.elements.detached[players[player].current_hudPage] = {}
+    if not players[player].glasses_display.elements.detached[1] then
+        players[player].glasses_display.elements.detached[1] = {}
+    end
+    if not players[player].glasses_display.elements.detached[2] then
+        players[player].glasses_display.elements.detached[2] = {}
+    end
+    if not players[player].glasses_display.elements.detached[3] then
+        players[player].glasses_display.elements.detached[3] = {}
     end
 
-    local widget = widgetFunc(table.unpack(args), (#players[player].glasses_display.elements.detached[players[player].current_hudPage]+1) or 1)
+    players[player].glasses_display.selectedForDrag = {}
+    players[player].glasses_display.selectedForDrag.offset = {}
+
+    table.insert(players[player].detach_args, (#players[player].glasses_display.elements.detached[players[player].current_hudPage]+1) or 1)
+
+    local widget = players[player].detach_method(table.unpack(players[player].detach_args))
 
     widget.onDrag = function(eventName, address, player, x, y, button)
-        widget.move(x+players[player].glasses_display.selectedForDrag.offset.x, y+players[player].glasses_display.selectedForDrag.offset.Y)
+        widget.move(x-players[player].glasses_display.selectedForDrag.offset.x, y-players[player].glasses_display.selectedForDrag.offset.y)
+        widget.box.x = x-players[player].glasses_display.selectedForDrag.offset.x; widget.box.x2 = x-players[player].glasses_display.selectedForDrag.offset.x+widget.box.width;
+        widget.box.y = y-players[player].glasses_display.selectedForDrag.offset.y; widget.box.y2 = y-players[player].glasses_display.selectedForDrag.offset.y+widget.box.height
     end
 
     widget.onClick = function(eventName, address, player, x, y, button)
         print("glasses_display - Line 272: onClick called for detached widget")
         local suc, err = pcall(function()
             if eventName == "hud_click" and button == 0 then
-                players[player].glasses_display.selectedForDrag.func = widget.move
+                players[player].glasses_display.selectedForDrag.func = widget.onDrag
 
-                local startX, startY = widget.getPosition()
+                local startX, startY = widget.box.getPosition()
                 players[player].glasses_display.selectedForDrag.offset = {x = x-startX, y = y-startY}
             end
         end)

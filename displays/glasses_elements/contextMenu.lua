@@ -64,7 +64,7 @@ end
 
 function contextMenu.onClick(eventName, address, player, x, y, button)
     print("contextMenu - Line 50: Handling onClick event", x, y)
-    local suc, err = pcall(function()
+    --local suc, err = pcall(function()
         component.glasses = require("displays.glasses_display").getGlassesProxy(player)
         if eventName == "hud_click" and button == 0 then
             print("contextMenu - Line 54: Left-click detected")
@@ -84,8 +84,8 @@ function contextMenu.onClick(eventName, address, player, x, y, button)
             end
             return true
         end
-    end)
-    if not suc then print("contextMenu - Line 70: " .. err) end
+    --end)
+    --if not suc then print("contextMenu - Line 70: " .. err) end
 end
 
 function contextMenu.onClickRight(eventName, address, player, x, y, button)
