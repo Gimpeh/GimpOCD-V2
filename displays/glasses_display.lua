@@ -320,7 +320,7 @@ end
 glasses_display.update = function()
     print("glasses_display - Line 252: update called for player: " .. tostring(player))
     local suc, err = pcall(function()
-        for playerName, playerTable in ipairs(players) do
+        for playerName, playerTable in pairs(players) do
             for moduleName, module in pairs(players[playerName].modules[players[playerName].current_hudPage]) do
                 if module and module.update then
                     print("glasses_display - Line 256: Updating module: " .. tostring(module) .. " for player: " .. tostring(player))
