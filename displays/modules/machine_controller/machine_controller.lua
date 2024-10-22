@@ -199,6 +199,9 @@ function machine_controller.remove(player)
             machine_controller.players[player].elements[k] = nil
         end
         players[player].modules.available.machine_controller = require("displays.modules.machine_controller.machine_controller").init
+        players[player].modules[players[player].current_hudPage].machine_controller = nil
+        machine_controller.players[player] = nil
+
 end
 
 function machine_controller.setVisible(visible, player)
@@ -253,6 +256,12 @@ function machine_controller.onModemMessage(messageType, group, message)
             end
             init_timer = event.timer(timing.seven, function() event.push("machines_init") end, 1)
             --machine_controller.groups[group] = {}
+            for index, group in pairs(machine_controller.groups) do
+                if group.name == group then
+                    print("mach_cont - 220: init message recieved - group already exists", group)
+                    table.remove(machine_controller.groups, index)
+                end
+            end
             table.insert(machine_controller.groups, {name = group, allowed = 0})
             print("mach_cont - 220: init message recieved - group added", group)
             for k, v in ipairs(messageTable) do
