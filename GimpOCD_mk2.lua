@@ -12,6 +12,12 @@ else
     time(1)
 end
 
+if args and args[2] and args[3] and args[4] then
+    glasses_Coords = {x = tonumber(args[2]), y = tonumber(args[3]), z = tonumber(args[4])}
+else
+    glasses_Coords = {x = 6, y = 45, z = 14}
+end
+
 local event = require("event")
 component = require("component")
 local glasses_display = require("displays.glasses_display")

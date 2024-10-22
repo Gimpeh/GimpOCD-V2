@@ -318,20 +318,25 @@ glasses_display.onDrag = function(eventName, address, player, x, y, button)
 end
 
 glasses_display.update = function()
-    print("glasses_display - Line 252: update called for player: " .. tostring(player))
+    print("glasses_display - Line 252: update called")
     local suc, err = pcall(function()
         for playerName, playerTable in pairs(players) do
             for moduleName, module in pairs(players[playerName].modules[players[playerName].current_hudPage]) do
                 if module and module.update then
-                    print("glasses_display - Line 256: Updating module: " .. tostring(module) .. " for player: " .. tostring(player))
+                    print("glasses_display - Line 256: Updating module: " .. tostring(module) .. " for player: " .. tostring(playerName))
                     module.update()
                 end
             end
         end
-        for index, widget in pairs (players[player].glasses_display.elements.detached[players[player].current_hudPage]) do
-            if widget and widget.update then
-                widget.update()
+        for player, playerTable in pairs(players) do
+            for index, widget in ipairs(players[player].glasses_display.elements.detached[players[player].current_hudPage]) do
+                if not widget or not widget.update then
+                    table.remove(players[player].glasses_display.elements.detached[players[player].current_hudPage], index)
+                else
+                    widget.update()
+                end
             end
+    
         end
     end)
     if not suc then print(err) end

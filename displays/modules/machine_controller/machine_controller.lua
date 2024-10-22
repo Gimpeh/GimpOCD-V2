@@ -332,13 +332,14 @@ machine_controller.createGroupWidget = function(x, y, group, player, detached, i
     
         print("mach_cont - 278: createGroupWidget - setting up function table")
         local funcTable = {
-            [1] = {text = "View Group", func = init_groupFocus, args = {player, group}},
+            [1] = {text = "View Group", func = function(player, group) 
+                if not detached then
+                    init_groupFocus(player, group)
+                end
+            end, args = {player, group}},
             [2] = {text =  "Turn Group On", func = function() component.modem.broadcast(301, " ", group, "group on") end, args = {}},
             [3] = {text =  "Turn Group Off", func = function() component.modem.broadcast(301, " ", group, "group off") end, args = {}},
-            [4] = {text = "Set Tag", func = function()
-                --Do something with this eventually
-            end, args = {}},
-            [5] = {text = text, func = function()
+            [4] = {text = text, func = function()
                     if detached then 
                         groupWidget.remove()
                         detached = false
@@ -350,7 +351,7 @@ machine_controller.createGroupWidget = function(x, y, group, player, detached, i
                     event.push("detach_element", player) end, args = {}}
                     }
         print("mach_cont - 303: createGroupWidget - finished base function table")
-        if detached then funcTable[6] = {text = "Set Page", func = function()
+        if detached then funcTable[5] = {text = "Set Page", func = function()
             local contextMenu = contextMenu.init(x, y, player, {
                 [1] = {text = "Set Page 1", func = function()
                     table.remove(players[player].glasses_display.elements.detached[players[player].current_hudPage], groupWidget.index)
@@ -400,7 +401,7 @@ machine_controller.createGroupWidget = function(x, y, group, player, detached, i
             elseif group.allowed and group.allowed == 0 then
                 groupWidget.backgroundInterior.setColor(1, 0, 0)
             end
-            groupWidget.canRun.setText(tostring(machine_controller.groups[group].allowed))
+            groupWidget.canRun.setText(tostring(group.allowed))
         end
     
         return groupWidget
@@ -438,24 +439,20 @@ machine_controller.createMachineWidget = function(x, y, machineGroup, player, de
             [4] = {text = "Toggle Beacon", func = function()
                 local beacon
                 if beacon and beacon.getID then
-                    machineWidget.beaconStatus.setColor(1, 0, 0)
+                    machineWidget.beaconStatus.setSize(0, 0)
                     component.glasses.removeObject(beacon.getID())
                     beacon = nil
                     return
                 end
     
-                machineWidget.beaconStatus.setColor(0, 1, 1)
+                machineWidget.beaconStatus.setSize(5, 5)
                 local coords = remote_execute(machine, "getCoordinates", " ", player)
     
                 component.glasses = require("displays.glasses_display").getGlassesProxy(player)
-                beacon = component.glasses.addCube3D()
     
-                local correctedCoords = gimpHelper.correctedCoordinates(coords, players[player].glasses_controller_coordinates)
+                local correctedCoords = gimpHelper.correctedCoordinates(coords, glasses_Coords)
     
-                beacon.set3dPos(correctedCoords.x, correctedCoords.y, correctedCoords.z)
-                beacon.setVisibleThroughObjects(true)
-                beacon.setColor(0, 1, 1)
-                beacon.setViewDistance(500)
+                beacon = widgetsAreUs.beacon(correctedCoords.x, correctedCoords.y, correctedCoords.z, c.turquoise)
             end, args = {}},
             [5] = {text = text, func = function()
                 if detached then

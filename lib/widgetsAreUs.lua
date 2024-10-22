@@ -490,6 +490,14 @@ function widgetsAreUs.machineGroup(x, y, groupTable)
     local canRun = widgetsAreUs.text(x+70, y+20, " ", 1.2, c.black)
 
     return widgetsAreUs.attachCoreFunctions({box = background, backgroundInterior = backgroundInterior, title = title, numberOfMachines = numberOfMachines, canRunTitle = canRunTitle, canRun = canRun,
+    move = function(x2, y2)
+        background.setPosition(x2, y2)
+        backgroundInterior.setPosition(x2+5, y2+5)
+        title.setPosition(x2+8, y2+10)
+        numberOfMachines.setPosition(x2+70, y2+8)
+        canRunTitle.setPosition(x2+8, y2+20)
+        canRun.setPosition(x2+70, y2+20)
+    end,
     update = function(update_table)
         print("widgetsAreUs - Line 472: Updating machine group.", groupName)
         numberOfMachines.setText(tostring(update_table.numberOfMachines))
@@ -513,7 +521,7 @@ function widgetsAreUs.machine(x, y, address)
     local background = widgetsAreUs.createBox(x, y, 85, 34, c.object, 0.6)
     local backgroundInterior = widgetsAreUs.createBox(x+3, y+3, 79, 28, c.object, 0.7)
     local machineName = widgetsAreUs.text(x+5, y+5, "getting name", 0.8, c.black)
-    local beaconStatus = widgetsAreUs.createBox(x+78, y+27, 0, 0, c.red, 0.8)
+    local beaconStatus = widgetsAreUs.createBox(x+78, y+27, 0, 0, c.turquoise, 0.8)
     local state = widgetsAreUs.text(x+22, y+24, "state", 1.2, c.black)
 
     return widgetsAreUs.attachCoreFunctions({
