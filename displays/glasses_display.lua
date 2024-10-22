@@ -136,11 +136,17 @@ init_phase2 = function(player)
                             print("glasses_display - Line 121: Setting module visible for player: " .. player)
                             module.setVisible(true, player)
                         end
+                        for index, detached in ipairs(players[player].glasses_display.elements.detached[players[player].current_hudPage]) do
+                            detached.setVisible(true, player)
+                        end
                     elseif index ~= players[player].current_hudPage then
                         players[player].glasses_display.elements[index].box.setColor(table.unpack(c.pagesButton_inactive))
                         for moduleName, module in pairs(players[player].modules[index]) do
                             print("glasses_display - Line 126: Setting module invisible for player: " .. player)
                             module.setVisible(false, player)
+                        end
+                        for index, detached in ipairs(players[player].glasses_display.elements.detached[players[player].current_hudPage]) do
+                            detached.setVisible(false, player)
                         end
                     end
                 end
@@ -157,11 +163,17 @@ init_phase2 = function(player)
                             print("glasses_display - Line 138: Setting module visible for player: " .. player)
                             module.setVisible(true, player)
                         end
+                        for index, detached in ipairs(players[player].glasses_display.elements.detached[players[player].current_hudPage]) do
+                            detached.setVisible(true, player)
+                        end
                     elseif index ~= players[player].current_hudPage then
                         players[player].glasses_display.elements[index].box.setColor(table.unpack(c.pagesButton_inactive))
                         for moduleName, module in pairs(players[player].modules[index]) do
                             print("glasses_display - Line 143: Setting module invisible for player: " .. player)
                             module.setVisible(false, player)
+                        end
+                        for index, detached in ipairs(players[player].glasses_display.elements.detached[players[player].current_hudPage]) do
+                            detached.setVisible(false, player)
                         end
                     end
                 end
@@ -178,11 +190,17 @@ init_phase2 = function(player)
                             print("glasses_display - Line 155: Setting module visible for player: " .. player)
                             module.setVisible(true, player)
                         end
+                        for index, detached in ipairs(players[player].glasses_display.elements.detached[players[player].current_hudPage]) do
+                            detached.setVisible(true, player)
+                        end
                     elseif index ~= players[player].current_hudPage then
                         players[player].glasses_display.elements[index].box.setColor(table.unpack(c.pagesButton_inactive))
                         for moduleName, module in pairs(players[player].modules[index]) do
                             print("glasses_display - Line 160: Setting module invisible for player: " .. player)
                             module.setVisible(false, player)
+                        end
+                        for index, detached in ipairs(players[player].glasses_display.elements.detached[players[player].current_hudPage]) do
+                            detached.setVisible(false, player)
                         end
                     end
                 end
