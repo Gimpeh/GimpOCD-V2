@@ -346,8 +346,8 @@ machine_controller.createGroupWidget = function(x, y, group, player, detached, i
                     init_groupFocus(player, group)
                 end
             end, args = {player, group}},
-            [2] = {text =  "Turn Group On", func = function() component.modem.broadcast(301, " ", group, "group on") end, args = {}},
-            [3] = {text =  "Turn Group Off", func = function() component.modem.broadcast(301, " ", group, "group off") end, args = {}},
+            [2] = {text =  "Turn Group On", func = function() component.modem.broadcast(301, " ", group.name, "group on") end, args = {}},
+            [3] = {text =  "Turn Group Off", func = function() component.modem.broadcast(301, " ", group.name, "group off") end, args = {}},
             [4] = {text = text, func = function()
                     if detached then 
                         groupWidget.remove()
